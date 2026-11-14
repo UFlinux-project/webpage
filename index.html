@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="UFlinux is a work in progress. Stay tuned for updates.">
+  <title>UFlinux — Work in Progress</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: #0b1020;
+      color: #e8edf6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 35%, #17233e 0%, #0b1020 65%);
+    }
+
+    main {
+      width: min(100%, 560px);
+      padding: clamp(28px, 6vw, 52px);
+      border: 1px solid #2a3650;
+      border-radius: 16px;
+      background: #111a2bcf;
+      box-shadow: 0 24px 70px #0004;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 44px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #58e6aa;
+      color: #0b1020;
+      font-weight: 800;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 16px;
+      color: #83f0bf;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 14px #58e6aa80;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2.2rem, 7vw, 3.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.06em;
+    }
+
+    h1 span { color: #58e6aa; }
+
+    p {
+      max-width: 39ch;
+      margin: 0;
+      color: #a5b2c9;
+      font-size: 0.97rem;
+      line-height: 1.8;
+    }
+
+    .terminal {
+      margin-top: 38px;
+      padding: 16px 18px;
+      border: 1px solid #28364d;
+      border-radius: 9px;
+      background: #090f1c;
+      color: #b9c6da;
+      font-size: 0.83rem;
+      overflow-wrap: anywhere;
+    }
+
+    .prompt { color: #58e6aa; }
+    .muted { color: #71819e; }
+
+    footer {
+      margin-top: 34px;
+      color: #71819e;
+      font-size: 0.75rem;
+    }
+
+    @keyframes pulse {
+      50% { opacity: 0.35; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dot { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand"><span class="logo" aria-hidden="true">UF</span> UFlinux</div>
+
+    <div class="status"><span class="dot" aria-hidden="true"></span> Work in progress</div>
+    <h1>Something is <span>booting up.</span></h1>
+    <p>UFlinux is currently under development. We're getting things ready behind the scenes. Check back soon for updates.</p>
+
+    <div class="terminal" aria-label="Project status">
+      <span class="prompt">$</span> status uflinux<br>
+      <span class="muted">&gt;</span> development in progress<span class="prompt">_</span>
+    </div>
+
+    <footer>&copy; UFlinux. Built with curiosity.</footer>
+  </main>
+</body>
+</html>
