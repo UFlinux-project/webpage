@@ -1,11 +1,11 @@
-"""Build complete static documents. Production builds require fresh GitHub metadata."""
+"""Build complete static documents. Builds use live release metadata or a maintained production snapshot."""
 import html, json, os, shutil, sys
 from pathlib import Path
-from releases import API, ARCHES, REPO, TARGETS, fetch, normalize
+from releases import ARCHES, REPO, TARGETS, latest
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'dist'
 origin=os.getenv('SITE_ORIGIN','https://uflinux.org').rstrip('/')
-catalog=json.loads((ROOT/'tests/release-fixture.json').read_text()) if '--offline' in sys.argv else normalize(fetch(API))
+catalog=json.loads((ROOT/'tests/release-fixture.json').read_text()) if '--offline' in sys.argv else latest(ROOT/'data/releases.json')
 if OUT.exists(): shutil.rmtree(OUT)
 OUT.mkdir()
 shutil.copytree(ROOT/'assets',OUT/'assets',ignore=shutil.ignore_patterns('ivy.jpg'))
@@ -38,7 +38,8 @@ def render(lang,route,title,description,body,index=True):
 <meta property="og:type" content="website"><meta property="og:url" content="{origin}{url}">
 <meta property="og:image" content="{origin}{a('ivy-1440.webp')}"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{a('logo.svg')}" type="image/svg+xml">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&amp;display=swap"><link rel="stylesheet" href="{a('site.css')}">
+<style>{(ROOT/'assets/site.css').read_text()}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&amp;display=swap" media="print" onload="&quot;use strict&quot;; this.onload=null; this.media='all';" hx-preserve="true" id="ubuntu-fonts">
 <meta name="htmx-config" content='{{"allowEval":false,"allowScriptTags":false,"preload":{{"autoBoost":false}}}}'>
 {'' if index else '<meta name="robots" content="noindex,follow">'}
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/htmx/4.0.1/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous"></script><script defer src="https://cdnjs.cloudflare.com/ajax/libs/htmx/4.0.1/ext/hx-preload.min.js" integrity="sha384-7gaXKgQyxJfh9ekNnYPYQ27fsBHx1Qgya7sMCEFLlsW57R8l6rEnCWO8ucRcmYrP" crossorigin="anonymous"></script>
@@ -46,11 +47,11 @@ def render(lang,route,title,description,body,index=True):
 </head><body>
 <a class="skip" href="#main">{tr('Skip to content','Přejít k obsahu')}</a>
 <div id="page" data-language="{lang}" hx-history-elt hx-boost:inherited="true" hx-target:inherited="#page" hx-select:inherited="#page" hx-swap:inherited="outerHTML" hx-preload:inherited="mouseover">
-<header class="header"><a class="brand" href="{prefix}/"><img src="{a('logo.svg')}" width="35" height="35" alt="">UFlinux<span class="brand-dot">.</span></a>
+<header class="header"><a class="brand" href="{prefix}/"><img src="{a('logo.svg')}" width="35" height="35" alt=""><span class="wordmark">UFlinux.</span></a>
 <nav aria-label="{tr('Main navigation','Hlavní navigace')}">{navhtml}</nav>
 <a class="language" href="{alt}" hreflang="{'en' if cs else 'cs'}" lang="{'en' if cs else 'cs'}" hx-boost="false" aria-label="{tr('Switch language to Czech','Přepnout jazyk na angličtinu')}"><span class="language-flag" aria-hidden="true">{'🇬🇧' if cs else '🇨🇿'}</span>{'EN' if cs else 'CZ'} ↗</a></header>
 <main id="main" tabindex="-1">{body}</main>
-<footer><div><a class="brand" href="{prefix}/">UFlinux<span class="brand-dot">.</span></a><p>{tr('A small system. Room for your ideas.','Malý systém. Prostor pro vaše nápady.')}</p></div>
+<footer><div><a class="brand" href="{prefix}/"><span class="wordmark">UFlinux.</span></a><p>{tr('A small system. Room for your ideas.','Malý systém. Prostor pro vaše nápady.')}</p></div>
 <div class="footer-links"><a href="{REPO}" hx-boost="false">GitHub ↗</a><a href="{REPO}/issues" hx-boost="false">{tr('Report an issue','Nahlásit chybu')} ↗</a>
 <a href="{prefix}/credits/">{tr('Artwork & licenses','Autoři a licence')}</a></div><small>© {tr('UFlinux contributors','Přispěvatelé UFlinux')} · {tr('Built in the open.','Vyvíjeno otevřeně.')}</small></footer>
 </div></body></html>"""
@@ -86,7 +87,7 @@ def build_language(lang):
 <article><span class="feature-number">02 /</span><h3>{t('Small at the core','Malý v základu')}</h3><p>{t('Built on Alpine Linux with OpenRC and APK package management. A straightforward foundation you can make your own.','Postaveno na Alpine Linuxu s OpenRC a správou balíčků APK. Jednoduchý základ, který si přizpůsobíte.')}</p></article>
 <article><span class="feature-number">03 /</span><h3>{t('Ready for the everyday','Pro každý den')}</h3><p>{t('Firefox, a file manager, media tools, and system settings. A consistent dark theme ties it all together.','Firefox, správce souborů, multimediální nástroje a nastavení systému. Vše spojuje jednotný tmavý vzhled.')}</p></article></div></section>
 <section class="callout"><div><p class="eyebrow">{t('YOUR NEXT BOOT','VAŠE PŘÍŠTÍ SPUŠTĚNÍ')}</p><h2>{t('Different hardware.<br>Same quiet confidence.','Různý hardware.<br>Stejný klid.')}</h2><p>{t('PCs, virtual machines, and selected single-board computers. Let us help you choose the right starting point.','PC, virtuální stroje i vybrané jednodeskové počítače. Pomůžeme vám vybrat správný začátek.')}</p>{link('/downloads/choose/',t('Choose your image','Vybrat obraz')+' ↗')}</div>
-<div class="system-card"><div class="window-bar"><span></span><span></span><span></span><b>UFlinux</b></div><div class="system-body"><img src="{a('logo.svg')}" width="76" height="76" alt="" loading="lazy"><h3>{t('Simple by design.','Jednoduchost záměrem.')}</h3><p>Alpine Linux + labwc</p><div class="system-row"><span>{t('Appearance','Vzhled')}</span><span>{t('Dark','Tmavý')} ◐</span></div><div class="system-row"><span>{t('Your system','Váš systém')}</span><span>{t('Your choice','Vaše volba')} ↗</span></div></div></div></section>"""
+<div class="system-card"><div class="window-bar"><img class="window-app-icon" src="{a('logo.svg')}" width="18" height="18" alt=""><b>UFlinux</b><div class="window-controls" aria-hidden="true"><span class="window-control"><svg viewBox="0 0 16 16"><path d="M4 11h8"/></svg></span><span class="window-control"><svg viewBox="0 0 16 16"><rect x="4.5" y="4.5" width="7" height="7"/></svg></span><span class="window-control close"><svg viewBox="0 0 16 16"><path d="m5 5 6 6m0-6-6 6"/></svg></span></div></div><div class="system-body"><img src="{a('logo.svg')}" width="76" height="76" alt="" loading="lazy"><h3>{t('Simple by design.','Jednoduchost záměrem.')}</h3><p>Alpine Linux + labwc</p><div class="system-row"><span>{t('Appearance','Vzhled')}</span><span>{t('Dark','Tmavý')} ◐</span></div><div class="system-row"><span>{t('Your system','Váš systém')}</span><span>{t('Your choice','Vaše volba')} ↗</span></div></div></div></section>"""
     page('/',t('A minimal Alpine Linux desktop','Minimalistický desktop s Alpine Linuxem'),t('Discover UFlinux, a minimal Alpine Linux desktop with labwc. Download images for PCs, virtual machines and selected boards.','Objevte UFlinux, minimalistický desktop s Alpine Linuxem a labwc. Stáhněte obrazy pro PC, virtuální stroje a vybrané desky.'),home)
     def asset_card(item):
         name=esc(item['name']); size=f"{item['size']/1024**3:.2f} GiB"

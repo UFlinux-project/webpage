@@ -4,7 +4,7 @@ on:
     - cron: '17 * * * *'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: release-refresh
   cancel-in-progress: false
@@ -16,6 +16,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Refresh production snapshot
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/releases.py --snapshot data/releases.json
+      - name: Commit snapshot before triggering Pages
+        run: |
+          if ! git diff --quiet -- data/releases.json; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/releases.json
+            git commit -m 'Update release download catalog'
+            git push
+          fi
       - name: Check release and trigger Pages when changed
         env:
           GITHUB_TOKEN: ${{ github.token }}

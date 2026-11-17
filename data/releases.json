@@ -1,0 +1,143 @@
+{
+  "tag": "v0.2.4",
+  "published": "2026-11-17T13:38:11Z",
+  "url": "https://github.com/UFlinux-project/uflinux3/releases/tag/v0.2.4",
+  "assets": [
+    {
+      "name": "SHA256SUMS",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/SHA256SUMS",
+      "size": 545,
+      "key": null,
+      "updated": "2026-11-17T13:36:35Z",
+      "digest": "sha256:6a70a209b6a521b32aeb16fcf494abff65b1a59c060440116dd64f0148efa029"
+    },
+    {
+      "name": "uflinux-0.2.4-aarch64.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-aarch64.iso",
+      "size": 2076477440,
+      "key": "aarch64",
+      "updated": "2026-11-17T13:36:50Z",
+      "digest": "sha256:497addc5a97c8b900650331af90f657080b4c2976a1296777e10be04112daa19"
+    },
+    {
+      "name": "uflinux-0.2.4-armv7.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-armv7.iso",
+      "size": 1554444288,
+      "key": "armv7",
+      "updated": "2026-11-17T13:37:32Z",
+      "digest": "sha256:c5852939d2e1e966db13e0a531322a2716f5ede245a3aa4ee568fb0ccee423bf"
+    },
+    {
+      "name": "uflinux-0.2.4-ppc64le.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-ppc64le.iso",
+      "size": 1673783296,
+      "key": "ppc64le",
+      "updated": "2026-11-17T13:36:22Z",
+      "digest": "sha256:89a6050ad01877330a223300fbaf94994c9eb90d1fbc24bcdcafbb9e9925da51"
+    },
+    {
+      "name": "uflinux-0.2.4-qcs6490-aarch64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-qcs6490-aarch64.img.zst",
+      "size": 1330640697,
+      "key": "qcs6490",
+      "updated": "2026-11-17T13:40:25Z",
+      "digest": "sha256:74b6be845c76771da32942a7fb119fbc0c7bb28a7c0f2f2544ea9b9a4b66f13c"
+    },
+    {
+      "name": "uflinux-0.2.4-qcs6490-aarch64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-qcs6490-aarch64.img.zst.sha256",
+      "size": 104,
+      "key": null,
+      "updated": "2026-11-17T13:40:17Z",
+      "digest": "sha256:54089b6dd7c148768bf85278b43b90ab7eb5a34cc2af832628c31218ed33be2e"
+    },
+    {
+      "name": "uflinux-0.2.4-riscv64.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-riscv64.iso",
+      "size": 1490722816,
+      "key": "riscv64",
+      "updated": "2026-11-17T13:36:34Z",
+      "digest": "sha256:99c32b02b0a7f6d9e33fea33d435c130a0b5bab641311a8070ce562f3ab81e45"
+    },
+    {
+      "name": "uflinux-0.2.4-rpi-aarch64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-rpi-aarch64.img.zst",
+      "size": 1327320034,
+      "key": "rpi",
+      "updated": "2026-11-17T13:40:25Z",
+      "digest": "sha256:4b79d4b34e431840d72c774c0cc8e602f3541398045be80066a4a88c7328abce"
+    },
+    {
+      "name": "uflinux-0.2.4-rpi-aarch64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-rpi-aarch64.img.zst.sha256",
+      "size": 100,
+      "key": null,
+      "updated": "2026-11-17T13:40:18Z",
+      "digest": "sha256:5266cac5ce738420e7a925d537d82efbb207eccfaace5c249b94e64aab4cad5b"
+    },
+    {
+      "name": "uflinux-0.2.4-spacemit-k1-riscv64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-spacemit-k1-riscv64.img.zst",
+      "size": 1290940207,
+      "key": "spacemit-k1",
+      "updated": "2026-11-17T13:40:16Z",
+      "digest": "sha256:0c6d7bbca5f571701ae882b194d51b5ac2d25e46fe43170d4dc5b2d75f255aaf"
+    },
+    {
+      "name": "uflinux-0.2.4-spacemit-k1-riscv64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-spacemit-k1-riscv64.img.zst.sha256",
+      "size": 108,
+      "key": null,
+      "updated": "2026-11-17T13:40:19Z",
+      "digest": "sha256:e662a1e2a6176a8fb93f02c402812b52985c3ec48381c0943376056b2c3b1677"
+    },
+    {
+      "name": "uflinux-0.2.4-vm-aarch64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-vm-aarch64.img.zst",
+      "size": 1348347748,
+      "key": "vm-aarch64",
+      "updated": "2026-11-17T13:40:21Z",
+      "digest": "sha256:6ecad659ced23ba6238756e039fdd6987dde268682c6af1b41676780be0ef203"
+    },
+    {
+      "name": "uflinux-0.2.4-vm-aarch64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-vm-aarch64.img.zst.sha256",
+      "size": 99,
+      "key": null,
+      "updated": "2026-11-17T13:40:18Z",
+      "digest": "sha256:15ea1457865d5812561dbe32c06132a49ce1e985a617897726eda7234ab28f35"
+    },
+    {
+      "name": "uflinux-0.2.4-vm-x86_64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-vm-x86_64.img.zst",
+      "size": 1369862843,
+      "key": "vm-x86_64",
+      "updated": "2026-11-17T13:40:25Z",
+      "digest": "sha256:9eacde2dc1208b2799b3dc3fa32aa3710adaea30fbd13064e2fb5d5614bb0d3e"
+    },
+    {
+      "name": "uflinux-0.2.4-vm-x86_64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-vm-x86_64.img.zst.sha256",
+      "size": 98,
+      "key": null,
+      "updated": "2026-11-17T13:40:19Z",
+      "digest": "sha256:fd3b2925a85dee14d32f4ce2a86a2b3336c14ff718bff64d53cc05371c7646fb"
+    },
+    {
+      "name": "uflinux-0.2.4-x86.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-x86.iso",
+      "size": 1971978240,
+      "key": "x86",
+      "updated": "2026-11-17T13:36:46Z",
+      "digest": "sha256:4360b4c8eaafd4f73a3d86276a469f379278d5813c1fff1b697af803138ce462"
+    },
+    {
+      "name": "uflinux-0.2.4-x86_64.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.4/uflinux-0.2.4-x86_64.iso",
+      "size": 2145386496,
+      "key": "x86_64",
+      "updated": "2026-11-17T13:37:05Z",
+      "digest": "sha256:1962763cac3abeaff1cfdcf8cf9d7f6e75a6c8d025cbad75ad0f56cae78c486d"
+    }
+  ]
+}

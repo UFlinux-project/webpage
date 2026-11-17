@@ -9,7 +9,7 @@ python3 scripts/build.py
 python3 -m http.server 8000 --directory dist
 ```
 
-Production builds fetch the latest published stable GitHub Release and fail on network or metadata errors, leaving the previous Cloudflare deployment intact. For reproducible development without GitHub access:
+Production builds fetch the latest stable release. GitHub rate limits, server errors and connection failures use the maintained production snapshot in data/releases.json and log a warning. Invalid metadata still fails the build. For reproducible development without GitHub access:
 
 ```sh
 python3 scripts/build.py --offline
@@ -22,7 +22,7 @@ The offline fixture is for tests/development only. It is never a production fall
 
 Set framework preset to None, build command to `python3 scripts/build.py`, output directory to `dist`, and production branch to `main`. Set `PYTHON_VERSION=3.13` and `SITE_ORIGIN=https://uflinux.org` in Pages build environment variables. The existing Git integration builds source changes.
 
-Create a deploy hook for the production branch in Pages → Settings → Builds & deployments → Deploy hooks. Store its URL in this GitHub repository's Actions secret `CLOUDFLARE_PAGES_DEPLOY_HOOK`. The hourly/manual Refresh release downloads workflow compares GitHub metadata against the deployed `/releases.json` and invokes the hook only when it differs. Missing or late-added board assets are detected. No repository write token is required. Review Actions failures for API or hook issues; scheduled workflows may need re-enabling after prolonged repository inactivity.
+Create a deploy hook for the production branch in Pages → Settings → Builds & deployments → Deploy hooks. Store its URL in this GitHub repository's Actions secret `CLOUDFLARE_PAGES_DEPLOY_HOOK`. The hourly/manual Refresh release downloads workflow compares GitHub metadata against the deployed `/releases.json` and invokes the hook only when it differs. The workflow first refreshes and commits data/releases.json using its built-in GITHUB_TOKEN with contents: write permission, then checks the deployed catalog and triggers the hook. Missing or late-added board assets are detected. Repository branch rules must permit this bot push. No extra personal token is required. Review Actions failures for API or hook issues; scheduled workflows may need re-enabling after prolonged repository inactivity.
 
 The canonical origin defaults to https://uflinux.org. Change it through `SITE_ORIGIN` in Pages and the release workflow together. Set your Cloudflare domain redirect from www to the apex; Pages preview deployments should have Cloudflare's normal noindex behavior.
 
@@ -50,3 +50,5 @@ Ubuntu uses a Google Fonts stylesheet link with display=swap, which Cloudflare F
 After deployment, inspect the custom-domain network requests to verify Cloudflare rewrites font delivery to same-origin URLs. Do not infer activation from a local preview. Documentation: https://developers.cloudflare.com/speed/optimization/content/fonts/
 
 Assets keep their original filenames without content hashes or cache-busting parameters. Browsers may cache assets but must revalidate them before reuse. Language links show emoji flags alongside EN/CZ labels and accessible language-switch descriptions.
+
+The small site stylesheet is inlined into every document so first paint does not wait for a CSS request. The Ubuntu stylesheet loads with print media and switches to screen after loading, with display=swap. JavaScript-disabled browsers keep the system-font fallback and all navigation still works. Verify Cloudflare Fonts rewriting on the deployed custom domain.

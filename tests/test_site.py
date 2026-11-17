@@ -75,10 +75,23 @@ class SiteTests(unittest.TestCase):
         from unittest.mock import patch
         import runpy
         before=(ROOT/'dist/index.html').read_bytes()
-        with patch('releases.fetch',side_effect=TimeoutError('API unavailable')), patch.object(sys,'argv',['build.py']):
-            with self.assertRaises(TimeoutError):
+        with patch('releases.fetch',side_effect=ValueError('Invalid release metadata')), patch.object(sys,'argv',['build.py']):
+            with self.assertRaises(ValueError):
                 runpy.run_path(str(ROOT/'scripts/build.py'),run_name='__main__')
         self.assertEqual(before,(ROOT/'dist/index.html').read_bytes())
+
+    def test_rate_limit_uses_production_snapshot(self):
+        from unittest.mock import patch
+        from urllib.error import HTTPError
+        from releases import latest, load_snapshot
+        snapshot=ROOT/'data/releases.json'
+        for code in (403,429,503):
+            with patch('releases.fetch',side_effect=HTTPError('https://api.github.com/',code,'unavailable',{},None)):
+                self.assertEqual(latest(snapshot),load_snapshot(snapshot))
+        with patch('releases.fetch',side_effect=TimeoutError()):
+            self.assertEqual(latest(snapshot),load_snapshot(snapshot))
+        with patch('releases.fetch',side_effect=HTTPError('https://api.github.com/',401,'unauthorized',{},None)):
+            with self.assertRaises(HTTPError): latest(snapshot)
 
     def test_sitemap_and_locales(self):
         import xml.etree.ElementTree as ET

@@ -1,5 +1,6 @@
 """Shared, deterministic GitHub release normalization."""
-import json, os, re, urllib.request
+import json, os, re, sys, urllib.request, urllib.error
+from pathlib import Path
 API = 'https://api.github.com/repos/UFlinux-project/uflinux3/releases/latest'
 REPO = 'https://github.com/UFlinux-project/uflinux3'
 ARCHES = ('x86_64','x86','aarch64','armv7','ppc64le','riscv64')
@@ -27,10 +28,34 @@ def normalize(raw):
             if re.fullmatch(r'uflinux-'+version+'-'+device+'-'+arch+r'\.img\.zst',name): key=target
         assets.append({'name':name,'url':url,'size':a['size'],'key':key,'updated':a.get('updated_at'),'digest':a.get('digest')})
     return {'tag':raw['tag_name'],'published':raw['published_at'],'url':raw['html_url'],'assets':sorted(assets,key=lambda a:a['name'])}
+def load_snapshot(path):
+    saved=json.loads(Path(path).read_text())
+    return normalize({'tag_name':saved['tag'],'published_at':saved['published'],
+        'html_url':saved['url'],'assets':[dict(a, browser_download_url=a['url'],
+        updated_at=a.get('updated')) for a in saved['assets']]})
+
+def latest(snapshot):
+    try:
+        return normalize(fetch(API))
+    except urllib.error.HTTPError as error:
+        if error.code not in (403,429) and error.code < 500: raise
+        reason=f'GitHub HTTP {error.code}'
+    except (urllib.error.URLError, TimeoutError) as error:
+        reason=type(error).__name__
+    saved=load_snapshot(snapshot)
+    print(f'Warning: {reason}; using production release snapshot {saved["tag"]}.',file=sys.stderr)
+    return saved
+
 if __name__=='__main__':
     import argparse
-    p=argparse.ArgumentParser(); p.add_argument('--check',action='store_true'); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--check',action='store_true'); p.add_argument('--snapshot',type=Path); args=p.parse_args()
     current=normalize(fetch(API))
+    if args.snapshot:
+        temporary=args.snapshot.with_suffix('.tmp')
+        temporary.write_text(json.dumps(current,ensure_ascii=False,indent=2)+'\n')
+        temporary.replace(args.snapshot)
+        print('Updated release snapshot:',current['tag'])
+        sys.exit(0)
     if args.check:
         deployed=fetch(os.getenv('SITE_ORIGIN','https://uflinux.org').rstrip('/')+'/releases.json')
         if current!=deployed:
