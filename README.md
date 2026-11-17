@@ -49,7 +49,7 @@ Ubuntu uses a Google Fonts stylesheet link with display=swap, which Cloudflare F
 
 After deployment, inspect the custom-domain network requests to verify Cloudflare rewrites font delivery to same-origin URLs. Do not infer activation from a local preview. Documentation: https://developers.cloudflare.com/speed/optimization/content/fonts/
 
-Assets keep their original filenames without content hashes or cache-busting parameters. Browsers may cache assets but must revalidate them before reuse. Language links show emoji flags alongside EN/CZ labels and accessible language-switch descriptions.
+Assets keep their original filenames without content hashes or cache-busting parameters. Browsers may cache assets but must revalidate them before reuse. The language selector matches the documentation site: a native English/Čeština menu with translation and caret icons. It keeps the equivalent page or wizard step and provides a link fallback without JavaScript.
 
 The small site stylesheet is inlined into every document so first paint does not wait for a CSS request. The Ubuntu stylesheet loads with print media and switches to screen after loading, with display=swap. JavaScript-disabled browsers keep the system-font fallback and all navigation still works. Verify Cloudflare Fonts rewriting on the deployed custom domain.
 
@@ -57,4 +57,4 @@ The release status dot is green only when the build successfully fetches release
 
 Open Graph metadata is rendered into every HTML document, including per-page title, description and canonical URL, English/Czech locale alternatives, image type/dimensions/alt text, and matching Twitter cards. The local 1200×630 JPEG preview is derived from Dark Ivy and inherits its CC BY-SA 3.0 license (see Credits). Regenerate it with scripts/prepare-assets.py; production builds do not need Pillow.
 
-Interface icons use Font Awesome Free 7.3.1 from cdnjs (core, solid and regular styles only), pinned with SRI. Stylesheets load asynchronously; icon space is reserved and text labels remain usable without icon fonts. UFlinux branding and emoji language flags remain separate assets.
+Interface icons use Font Awesome Free 7.3.1 from cdnjs (core, solid and regular styles only), pinned with SRI. Stylesheets load asynchronously; icon space is reserved and text labels remain usable without icon fonts. UFlinux branding and the native language selector uses language names.

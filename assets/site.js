@@ -16,3 +16,16 @@ document.addEventListener("htmx:head:before:add", event => {
     event.preventDefault();
   }
 });
+
+// Delegate so the same native selector works after HTMX replaces the page.
+document.addEventListener("change", event => {
+  if (event.target.matches("select[data-language-select]")) {
+    window.location.assign(event.target.value);
+  }
+});
+window.addEventListener("pageshow", event => {
+  if (!event.persisted) return;
+  document.querySelectorAll("select[data-language-select]").forEach(select => {
+    select.selectedIndex = Array.from(select.options).findIndex(option => option.defaultSelected);
+  });
+});

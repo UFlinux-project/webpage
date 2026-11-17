@@ -66,7 +66,7 @@ def render(lang,route,title,description,body,index=True):
 <div id="page" data-language="{lang}" hx-history-elt hx-boost:inherited="true" hx-target:inherited="#page" hx-select:inherited="#page" hx-swap:inherited="outerHTML" hx-preload:inherited="mouseover">
 <header class="header"><a class="brand" href="{prefix}/"><img src="{a('logo.svg')}" width="35" height="35" alt=""><span class="wordmark">UFlinux.</span></a>
 <nav aria-label="{tr('Main navigation','Hlavní navigace')}">{navhtml}</nav>
-<a class="language" href="{alt}" hreflang="{'en' if cs else 'cs'}" lang="{'en' if cs else 'cs'}" hx-boost="false" aria-label="{tr('Switch language to Czech','Přepnout jazyk na angličtinu')}"><span class="language-flag" aria-hidden="true">{'🇬🇧' if cs else '🇨🇿'}</span>{'EN' if cs else 'CZ'} ↗</a></header>
+<div class="language-switcher" hx-boost="false"><label class="language-select"><span class="sr-only">{tr('Select language','Vybrat jazyk')}</span>{icon('language')}<select data-language-select autocomplete="off"><option value="{route}" lang="en"{' selected' if not cs else ''}>English</option><option value="/cs{route}" lang="cs"{' selected' if cs else ''}>Čeština</option></select>{icon('chevron-down')}</label><noscript><a href="{alt}" lang="{'en' if cs else 'cs'}">{'English' if cs else 'Čeština'}</a></noscript></div></header>
 <main id="main" tabindex="-1">{body}</main>
 <footer><div><a class="brand" href="{prefix}/"><span class="wordmark">UFlinux.</span></a><p>{tr('A small system. Room for your ideas.','Malý systém. Prostor pro vaše nápady.')}</p></div>
 <div class="footer-links"><a href="{REPO}" hx-boost="false">GitHub ↗</a><a href="{REPO}/issues" hx-boost="false">{tr('Report an issue','Nahlásit chybu')} ↗</a>
