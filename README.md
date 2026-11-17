@@ -56,3 +56,5 @@ The small site stylesheet is inlined into every document so first paint does not
 The release status dot is green only when the build successfully fetches release metadata from GitHub. Snapshot fallback and offline builds use a neutral dot. This reflects the data source at build time, not a live browser connectivity check.
 
 Open Graph metadata is rendered into every HTML document, including per-page title, description and canonical URL, English/Czech locale alternatives, image type/dimensions/alt text, and matching Twitter cards. The local 1200×630 JPEG preview is derived from Dark Ivy and inherits its CC BY-SA 3.0 license (see Credits). Regenerate it with scripts/prepare-assets.py; production builds do not need Pillow.
+
+Interface icons use Font Awesome Free 7.3.1 from cdnjs (core, solid and regular styles only), pinned with SRI. Stylesheets load asynchronously; icon space is reserved and text labels remain usable without icon fonts. UFlinux branding and emoji language flags remain separate assets.
