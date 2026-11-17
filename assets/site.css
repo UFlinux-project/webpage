@@ -28,3 +28,6 @@ html{scrollbar-gutter:stable}
 }
 
 @media(max-width:480px){.header{height:146px;grid-template-rows:40px auto}.header nav{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px}.header nav a,.header nav a:nth-child(2),.header nav a:last-child{text-align:left}}
+
+.header .brand img{display:block;object-fit:contain;flex:0 0 35px;width:35px;height:35px;border-radius:50%}
+@media(max-width:960px){.header .brand img{flex-basis:27px;width:27px;height:27px}}
