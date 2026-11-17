@@ -21,7 +21,7 @@ def a(path):
     return url
 def esc(s): return html.escape(str(s),quote=True)
 def icon(name,style='solid'):
-    return f'<i class="fa-{style} fa-{name}" aria-hidden="true"></i>'
+    return f'<span class="site-icon site-icon-{name}" aria-hidden="true"><i class="fa-{style} fa-{name}"></i></span>'
 sitemap=[]
 def render(lang,route,title,description,body,index=True):
     cs=lang=='cs'
