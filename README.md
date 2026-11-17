@@ -1,6 +1,6 @@
 # UFlinux website
 
-English and Czech static website for UFlinux. Python 3.10+ builds full HTML documents; HTMX 4.0.1 progressively enhances internal links with mouseover preloading. No runtime backend, browser API calls, analytics, or npm dependencies.
+English and Czech static website for UFlinux. Python 3.10+ builds full HTML documents; HTMX 4.0.1 loaded from cdnjs progressively enhances internal links with mouseover preloading. No runtime backend, browser API calls, analytics, or npm dependencies.
 
 ## Build and preview
 
@@ -30,7 +30,7 @@ The canonical origin defaults to https://uflinux.org. Change it through `SITE_OR
 
 - `scripts/build.py`: bilingual page rendering and static wizard graph.
 - `scripts/releases.py`: shared release normalization and refresh checker.
-- `assets/`: optimized wallpaper, CSS, JS and pinned HTMX.
+- `assets/`: optimized wallpaper, CSS and site JS. HTMX core and its preload/head extensions use pinned cdnjs URLs with subresource integrity and deferred loading.
 - `tests/`: offline release fixture and route/catalog tests.
 
 The wizard only recommends recognized assets actually present in the latest stable release. Unknown ISO/disk images appear in the list without recommendation. Results are noindex and omitted from the sitemap. Language links use full navigation to update document language reliably. External image downloads never use HTMX or preloading.
@@ -48,3 +48,5 @@ Check home, downloads and guide in both languages after deployment at pagespeed.
 Ubuntu uses a Google Fonts stylesheet link with display=swap, which Cloudflare Fonts rewrites at the edge to serve fonts from your own domain. Enable **Cloudflare Fonts** for uflinux.org under **Speed → Settings** in the Cloudflare dashboard. This zone setting cannot be enabled by a static build. Without it (including localhost and pages.dev previews), the stylesheet loads directly from Google Fonts. Czech characters are included automatically by the font stylesheet.
 
 After deployment, inspect the custom-domain network requests to verify Cloudflare rewrites font delivery to same-origin URLs. Do not infer activation from a local preview. Documentation: https://developers.cloudflare.com/speed/optimization/content/fonts/
+
+Assets keep their original filenames without content hashes or cache-busting parameters. Browsers may cache assets but must revalidate them before reuse. Language links show emoji flags alongside EN/CZ labels and accessible language-switch descriptions.

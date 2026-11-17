@@ -1,5 +1,5 @@
 """Build complete static documents. Production builds require fresh GitHub metadata."""
-import hashlib, html, json, os, shutil, sys
+import html, json, os, shutil, sys
 from pathlib import Path
 from releases import API, ARCHES, REPO, TARGETS, fetch, normalize
 ROOT=Path(__file__).resolve().parents[1]
@@ -9,18 +9,13 @@ catalog=json.loads((ROOT/'tests/release-fixture.json').read_text()) if '--offlin
 if OUT.exists(): shutil.rmtree(OUT)
 OUT.mkdir()
 shutil.copytree(ROOT/'assets',OUT/'assets',ignore=shutil.ignore_patterns('ivy.jpg'))
-# Fingerprint every served asset; shared URLs survive head merges and get immutable caching.
-asset={}
-for file in sorted((OUT/'assets').rglob('*')):
-    if file.is_file():
-        relative=file.relative_to(OUT).as_posix()
-        digest=hashlib.sha256(file.read_bytes()).hexdigest()[:12]
-        renamed=file.with_name(file.stem+'.'+digest+file.suffix)
-        # Font CSS keeps relative font URLs, which are intentionally stable.
-        if file.parent.name=='fonts': asset[relative]='/'+relative; continue
-        file.rename(renamed); asset[relative]='/'+renamed.relative_to(OUT).as_posix()
+# Keep original asset filenames and stable URLs across builds.
+asset={'/'+file.relative_to(OUT).as_posix(): file for file in (OUT/'assets').rglob('*') if file.is_file()}
+def a(path):
+    url='/assets/'+path
+    if url not in asset: raise FileNotFoundError(path)
+    return url
 def esc(s): return html.escape(str(s),quote=True)
-def a(path): return asset['assets/'+path]
 sitemap=[]
 def render(lang,route,title,description,body,index=True):
     cs=lang=='cs'
@@ -35,7 +30,7 @@ def render(lang,route,title,description,body,index=True):
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)} · UFlinux</title><meta name="description" content="{esc(description)}">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebSite","name":"UFlinux","url":"{origin}/","inLanguage":["en","cs"]}}</script>
-<meta name="theme-color" content="#151916"><meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#191919"><meta name="color-scheme" content="dark">
 <link rel="canonical" href="{origin}{url}">
 <link rel="alternate" hreflang="en" href="{origin}{route}"><link rel="alternate" hreflang="cs" href="{origin}/cs{route}">
 <link rel="alternate" hreflang="x-default" href="{origin}{route}">
@@ -46,14 +41,14 @@ def render(lang,route,title,description,body,index=True):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&amp;display=swap"><link rel="stylesheet" href="{a('site.css')}">
 <meta name="htmx-config" content='{{"allowEval":false,"allowScriptTags":false,"preload":{{"autoBoost":false}}}}'>
 {'' if index else '<meta name="robots" content="noindex,follow">'}
-<script defer src="{a('vendor/htmx.min.js')}"></script><script defer src="{a('vendor/hx-preload.min.js')}"></script>
-<script defer src="{a('vendor/hx-head.min.js')}"></script><script defer src="{a('site.js')}"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/htmx/4.0.1/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous"></script><script defer src="https://cdnjs.cloudflare.com/ajax/libs/htmx/4.0.1/ext/hx-preload.min.js" integrity="sha384-7gaXKgQyxJfh9ekNnYPYQ27fsBHx1Qgya7sMCEFLlsW57R8l6rEnCWO8ucRcmYrP" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/htmx/4.0.1/ext/hx-head.min.js" integrity="sha384-mvnUtszG0CziW1z/k9JYg2OpRWyy4FOsdzv9SINg91JArmMOAfzy0+xvC0wnFEBy" crossorigin="anonymous"></script><script defer src="{a('site.js')}"></script>
 </head><body>
 <a class="skip" href="#main">{tr('Skip to content','Přejít k obsahu')}</a>
 <div id="page" data-language="{lang}" hx-history-elt hx-boost:inherited="true" hx-target:inherited="#page" hx-select:inherited="#page" hx-swap:inherited="outerHTML" hx-preload:inherited="mouseover">
 <header class="header"><a class="brand" href="{prefix}/"><img src="{a('logo.svg')}" width="35" height="35" alt="">UFlinux<span class="brand-dot">.</span></a>
 <nav aria-label="{tr('Main navigation','Hlavní navigace')}">{navhtml}</nav>
-<a class="language" href="{alt}" hreflang="{'en' if cs else 'cs'}" lang="{'en' if cs else 'cs'}" hx-boost="false">{'EN' if cs else 'CZ'} ↗</a></header>
+<a class="language" href="{alt}" hreflang="{'en' if cs else 'cs'}" lang="{'en' if cs else 'cs'}" hx-boost="false" aria-label="{tr('Switch language to Czech','Přepnout jazyk na angličtinu')}"><span class="language-flag" aria-hidden="true">{'🇬🇧' if cs else '🇨🇿'}</span>{'EN' if cs else 'CZ'} ↗</a></header>
 <main id="main" tabindex="-1">{body}</main>
 <footer><div><a class="brand" href="{prefix}/">UFlinux<span class="brand-dot">.</span></a><p>{tr('A small system. Room for your ideas.','Malý systém. Prostor pro vaše nápady.')}</p></div>
 <div class="footer-links"><a href="{REPO}" hx-boost="false">GitHub ↗</a><a href="{REPO}/issues" hx-boost="false">{tr('Report an issue','Nahlásit chybu')} ↗</a>
@@ -145,13 +140,13 @@ def build_language(lang):
         guide+=f'<article class="guide-step"><span class="feature-number">{number} /</span><div><h2>{title}</h2><p>{text}</p><a href="{esc(url)}" hx-boost="false">{t("Read release documentation","Dokumentace vydání")} ↗</a></div></article>'
     page('/guide/',t('Getting started','Začínáme'),t('Verify your UFlinux download and follow the installation instructions for your device and release.','Ověřte stažený UFlinux a postupujte podle instalačních pokynů pro své zařízení a vydání.'),guide)
     credits=intro(t('CREDITS','AUTOŘI'),t('Built on shared work.','Postaveno na společné práci.'),t('Thank you to the people behind the project and its artwork.','Děkujeme lidem, kteří tvoří projekt a jeho vzhled.'))
-    credits+=f'<div class="prose"><p>Dark Ivy — Garrett LeSage / GNOME, <a href="https://creativecommons.org/licenses/by-sa/3.0/" hx-boost="false">CC BY-SA 3.0</a>. {t("Resized and converted to WebP for this site; derivatives retain the same license.","Pro tento web zmenšeno a převedeno do WebP; odvozené obrazy zachovávají stejnou licenci.")} <a href="https://github.com/GNOME/gnome-backgrounds/tree/3.38.0" hx-boost="false">{t("Original source","Původní zdroj")} ↗</a></p><p>UFlinux logo — UFlinux project, GPL-3.0-only. <a href="{a("LOGO-LICENSE.txt")}" hx-boost="false">GPL-3.0</a> · <a href="{REPO}/blob/main/docs/artwork.md" hx-boost="false">{t("Source and attribution","Zdroj a autorství")}</a></p><p>Ubuntu — Canonical Ltd., <a href="/assets/fonts/LICENSE.txt" hx-boost="false">Ubuntu Font Licence</a>.</p><p>HTMX 4.0.1 — <a href="{a("vendor/LICENSE.txt")}" hx-boost="false">Zero-Clause BSD</a>.</p></div>'
+    credits+=f'<div class="prose"><p>Dark Ivy — Garrett LeSage / GNOME, <a href="https://creativecommons.org/licenses/by-sa/3.0/" hx-boost="false">CC BY-SA 3.0</a>. {t("Resized and converted to WebP for this site; derivatives retain the same license.","Pro tento web zmenšeno a převedeno do WebP; odvozené obrazy zachovávají stejnou licenci.")} <a href="https://github.com/GNOME/gnome-backgrounds/tree/3.38.0" hx-boost="false">{t("Original source","Původní zdroj")} ↗</a></p><p>UFlinux logo — UFlinux project, GPL-3.0-only. {t("SVG canvas cropped to the circular badge; artwork unchanged.","Plátno SVG oříznuto na kruhový znak; kresba beze změny.")} <a href="{a("LOGO-LICENSE.txt")}" hx-boost="false">GPL-3.0</a> · <a href="{REPO}/blob/main/docs/artwork.md" hx-boost="false">{t("Source and attribution","Zdroj a autorství")}</a></p><p>Ubuntu — Canonical Ltd., <a href="/assets/fonts/LICENSE.txt" hx-boost="false">Ubuntu Font Licence</a>.</p><p>HTMX 4.0.1 — <a href="{a("vendor/LICENSE.txt")}" hx-boost="false">Zero-Clause BSD</a>.</p></div>'
     page('/credits/',t('Artwork and licenses','Autoři a licence'),t('Artwork attribution and licenses for the UFlinux website.','Autoři grafiky a licence webu UFlinux.'),credits)
 for lang in ('en','cs'): build_language(lang)
 (OUT/'releases.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2))
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join('<url><loc>'+origin+p+'</loc></url>' for p in sitemap)+'</urlset>')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+origin+'/sitemap.xml\n')
-(OUT/'_headers').write_text('/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/releases.json\n  Cache-Control: public, max-age=0, must-revalidate\n')
+(OUT/'_headers').write_text('/assets/*\n  Cache-Control: public, max-age=0, must-revalidate\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/releases.json\n  Cache-Control: public, max-age=0, must-revalidate\n')
 render('en','/404/','Page not found','This page could not be found.','<section class="intro"><p class="eyebrow">404</p><h1>A path less travelled.</h1><p>Page not found. Stránka nebyla nalezena.</p><a class="button" href="/">Home</a> <a href="/cs/">Česky</a></section>',False)
 errorfile=OUT/'404/index.html'
 errorfile.write_text(errorfile.read_text().replace('/cs/404/','/cs/').replace('/404/','/'))
