@@ -150,7 +150,7 @@ def build_language(lang):
         body+=f'<p class="note">{t("Board images contain device-specific boot files. Generic ISOs require compatible firmware. Review the release documentation and verify the checksum before use.","Obrazy desek obsahují specifické spouštěcí soubory. Obecné ISO vyžaduje kompatibilní firmware. Před použitím si přečtěte dokumentaci vydání a ověřte kontrolní součet.")}</p>'
         if key in ('qcs6490','spacemit-k1'):
             body+=f'<p class="note">{t("Experimental technology preview. Physical hardware and display support are limited; SpacemiT K1 may require a serial console.","Experimentální technologická ukázka. Podpora fyzického hardwaru a obrazu je omezená; SpacemiT K1 může vyžadovat sériovou konzoli.")}</p>'
-        body+=f'<div class="actions">{link("/guide/",t("Read the setup guide","Přečíst průvodce instalací"))}{link("/downloads/choose/",t("Start again","Začít znovu"),"text-link")}{link("/downloads/#images",t("All images","Všechny obrazy"),"text-link")}</div>'
+        body+=f'<div class="actions step-footer result-actions">{link("/guide/",t("Read the setup guide","Přečíst průvodce instalací"))}{link("/downloads/choose/",t("Start again","Začít znovu"),"text-link")}{link("/downloads/#images",t("All images","Všechny obrazy"),"text-link")}</div>'
         page(result(key),t('Recommended image','Doporučený obraz')+' · '+label,text,body,False)
     docs='https://docs.uflinux.org'+('/cs/' if cs else '/')
     guide=intro(t('GET STARTED','ZAČÍNÁME'),t('A good first boot.','První spuštění bez tápání.'),t('Choose carefully. Verify your download. Follow the documentation for your device.','Vybírejte pečlivě. Ověřte stažený soubor. Postupujte podle dokumentace svého zařízení.'))
