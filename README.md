@@ -35,7 +35,7 @@ The canonical origin defaults to https://uflinux.org. Change it through `SITE_OR
 
 The wizard only recommends recognized assets actually present in the latest stable release. Unknown ISO/disk images appear in the list without recommendation. Results are noindex and omitted from the sitemap. Language links use full navigation to update document language reliably. External image downloads never use HTMX or preloading.
 
-Edit bilingual strings together in the generator. Images link directly to GitHub Releases; the guide links to documentation at the release tag. Hardware status copy should be reviewed when project support changes.
+Edit bilingual strings together in the generator. Images link directly to GitHub Releases; the guide and navbar link to docs.uflinux.org, with Czech documentation used for Czech pages. Hardware status copy should be reviewed when project support changes.
 
 Artwork sources, adaptations, and licenses are credited on /credits/ and /cs/credits/. To recreate wallpaper assets, run `python3 scripts/prepare-assets.py` with Pillow installed; this is not needed for builds. Preserve the original Ivy JPEG as the source for those derivatives.
 
