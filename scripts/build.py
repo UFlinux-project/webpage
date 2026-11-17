@@ -31,7 +31,7 @@ def render(lang,route,title,description,body,index=True):
     alt=route if cs else '/cs'+route
     nav=[('/',tr('Overview','Přehled')),('/downloads/',tr('Downloads','Ke stažení')),('/guide/',tr('Get started','Začínáme'))]
     docs_origin='https://docs.uflinux.org'+('/cs/' if cs else '/')
-    navhtml=''.join(f'<a href="{prefix+p}"'+(' aria-current="page"' if route==p else '')+f'>{label}</a>' for p,label in nav)+f'<a href="{docs_origin}" hx-boost="false">{tr("Documentation","Dokumentace")} ↗</a>'
+    navhtml=''.join(f'<a href="{prefix+p}"'+(' aria-current="page"' if route==p else '')+f'>{label}</a>' for p,label in nav)+f'<a href="{docs_origin}" hx-boost="false">{tr("Documentation","Dokumentace")}</a>'
     document=f"""<!doctype html>
 <html lang="{lang}" prefix="og: https://ogp.me/ns#"><head hx-head="merge">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
