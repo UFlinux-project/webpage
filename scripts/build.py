@@ -31,7 +31,7 @@ def render(lang,route,title,description,body,index=True):
     docs_origin='https://docs.uflinux.org'+('/cs/' if cs else '/')
     navhtml=''.join(f'<a href="{prefix+p}"'+(' aria-current="page"' if route==p else '')+f'>{label}</a>' for p,label in nav)+f'<a href="{docs_origin}" hx-boost="false">{tr("Documentation","Dokumentace")} ↗</a>'
     document=f"""<!doctype html>
-<html lang="{lang}"><head hx-head="merge">
+<html lang="{lang}" prefix="og: https://ogp.me/ns#"><head hx-head="merge">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)} · UFlinux</title><meta name="description" content="{esc(description)}">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebSite","name":"UFlinux","url":"{origin}/","inLanguage":["en","cs"]}}</script>
@@ -41,7 +41,14 @@ def render(lang,route,title,description,body,index=True):
 <link rel="alternate" hreflang="x-default" href="{origin}{route}">
 <meta property="og:title" content="{esc(title)} · UFlinux"><meta property="og:description" content="{esc(description)}">
 <meta property="og:type" content="website"><meta property="og:url" content="{origin}{url}">
-<meta property="og:image" content="{origin}{a('ivy-1440.webp')}"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="UFlinux">
+<meta property="og:locale" content="{'cs_CZ' if cs else 'en_GB'}"><meta property="og:locale:alternate" content="{'en_GB' if cs else 'cs_CZ'}">
+<meta property="og:image" content="{origin}{a('og-image.jpg')}">
+<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{tr('Dark Ivy wallpaper: dark leaves with water droplets','Tapeta Dark Ivy: tmavé listy s kapkami vody')}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)} · UFlinux">
+<meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{origin}{a('og-image.jpg')}">
+<meta name="twitter:image:alt" content="{tr('Dark Ivy wallpaper: dark leaves with water droplets','Tapeta Dark Ivy: tmavé listy s kapkami vody')}">
 <link rel="icon" href="{a('logo.svg')}" type="image/svg+xml">
 <style>{(ROOT/'assets/site.css').read_text()}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&amp;display=swap" media="print" onload="&quot;use strict&quot;; this.onload=null; this.media='all';" hx-preserve="true" id="ubuntu-fonts">

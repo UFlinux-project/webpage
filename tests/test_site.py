@@ -8,11 +8,13 @@ from releases import normalize, ARCHES, TARGETS
 
 class Document(HTMLParser):
     def __init__(self,text):
-        super().__init__(); self.links=[]; self.ids=set(); self.lang=None; self.feed(text)
+        super().__init__(); self.links=[]; self.ids=set(); self.lang=None; self.metadata={}; self.canonical=None; self.feed(text)
     def handle_starttag(self,tag,attrs):
         attrs=dict(attrs)
         if 'id' in attrs: self.ids.add(attrs['id'])
         if tag=='html': self.lang=attrs.get('lang')
+        if tag=='meta': self.metadata[attrs.get('property',attrs.get('name'))]=attrs.get('content')
+        if tag=='link' and attrs.get('rel')=='canonical': self.canonical=attrs.get('href')
         for key in ('href','src'):
             if attrs.get(key,'').startswith('/'): self.links.append(attrs[key])
 
@@ -112,6 +114,25 @@ class SiteTests(unittest.TestCase):
         finally:
             subprocess.run([sys.executable,'scripts/build.py','--offline'],cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
         self.assertNotIn('class="status-dot status-dot-github"',(ROOT/'dist/index.html').read_text())
+
+    def test_open_graph_metadata(self):
+        from urllib.parse import urlsplit
+        for file in (ROOT/'dist').rglob('*.html'):
+            doc=Document(file.read_text())
+            meta=doc.metadata
+            for key in ('og:title','og:description','og:type','og:url','og:image',
+                        'og:site_name','og:locale','og:locale:alternate','og:image:alt'):
+                self.assertTrue(meta.get(key),f'{file}: missing {key}')
+            self.assertEqual(meta['og:url'],doc.canonical)
+            self.assertEqual(meta['og:locale'],'cs_CZ' if doc.lang=='cs' else 'en_GB')
+            self.assertEqual(meta['og:locale:alternate'],'en_GB' if doc.lang=='cs' else 'cs_CZ')
+            self.assertEqual(meta['og:image:type'],'image/jpeg')
+            self.assertEqual((meta['og:image:width'],meta['og:image:height']),('1200','630'))
+            self.assertEqual(meta['og:image'],meta['twitter:image'])
+            self.assertEqual(meta['og:title'],meta['twitter:title'])
+            self.assertEqual(meta['og:description'],meta['description'])
+            image=ROOT/'dist'/urlsplit(meta['og:image']).path.lstrip('/')
+            self.assertEqual(image.read_bytes()[:2],b'\xff\xd8')
 
     def test_sitemap_and_locales(self):
         import xml.etree.ElementTree as ET
