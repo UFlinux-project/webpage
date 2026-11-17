@@ -31,3 +31,5 @@ html{scrollbar-gutter:stable}
 
 .header .brand img{display:block;object-fit:contain;flex:0 0 35px;width:35px;height:35px;border-radius:50%}
 @media(max-width:960px){.header .brand img{flex-basis:27px;width:27px;height:27px}}
+
+.status-dot-github{background:#57c785}

@@ -5,7 +5,11 @@ from releases import ARCHES, REPO, TARGETS, latest
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'dist'
 origin=os.getenv('SITE_ORIGIN','https://uflinux.org').rstrip('/')
-catalog=json.loads((ROOT/'tests/release-fixture.json').read_text()) if '--offline' in sys.argv else latest(ROOT/'data/releases.json')
+if '--offline' in sys.argv:
+    catalog=json.loads((ROOT/'tests/release-fixture.json').read_text())
+    catalog_source='snapshot'
+else:
+    catalog,catalog_source=latest(ROOT/'data/releases.json')
 if OUT.exists(): shutil.rmtree(OUT)
 OUT.mkdir()
 shutil.copytree(ROOT/'assets',OUT/'assets',ignore=shutil.ignore_patterns('ivy.jpg'))
@@ -78,7 +82,7 @@ def build_language(lang):
     release=esc(catalog['tag'])
     home=f"""<section class="hero">
 <picture><source srcset="{a('ivy-720.webp')} 720w, {a('ivy-1440.webp')} 1440w, {a('ivy-1920.webp')} 1920w" sizes="100vw" type="image/webp"><img class="hero-image" src="{a('ivy-1440.webp')}" alt="" width="1920" height="1200" fetchpriority="high"></picture>
-<div class="hero-content"><a class="release-pill" href="{pre}/downloads/"><span class="status-dot"></span>{release} <span> / </span>{t('Available now','Právě k dispozici')} ↗</a>
+<div class="hero-content"><a class="release-pill" href="{pre}/downloads/"><span class="status-dot{' status-dot-github' if catalog_source=='github' else ''}" role="img" aria-label="{t('Release information from GitHub','Informace o vydání z GitHubu') if catalog_source=='github' else t('Saved release information','Uložené informace o vydání')}" title="{t('Release information from GitHub','Informace o vydání z GitHubu') if catalog_source=='github' else t('Saved release information','Uložené informace o vydání')}"></span>{release} <span> / </span>{t('Available now','Právě k dispozici')} ↗</a>
 <h1>{t('Less noise.<br>More Linux.','Méně rozptylování.<br>Více Linuxu.')}</h1>
 <p>{t('A minimal Alpine Linux desktop. Familiar on the surface. Refreshingly simple underneath.','Minimalistický desktop založený na Alpine Linuxu. Známé prostředí. Osvěžující jednoduchost uvnitř.')}</p>
 <div class="actions">{link('/downloads/choose/',t('Find your image','Najít vhodný obraz')+' <span aria-hidden="true">↗</span>')}{link('/downloads/#images',t('Browse downloads','Vše ke stažení'),'button secondary')}</div>

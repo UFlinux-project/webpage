@@ -35,8 +35,9 @@ def load_snapshot(path):
         updated_at=a.get('updated')) for a in saved['assets']]})
 
 def latest(snapshot):
+    """Return the catalog and its build-time source without changing catalog JSON."""
     try:
-        return normalize(fetch(API))
+        return normalize(fetch(API)), 'github'
     except urllib.error.HTTPError as error:
         if error.code not in (403,429) and error.code < 500: raise
         reason=f'GitHub HTTP {error.code}'
@@ -44,7 +45,7 @@ def latest(snapshot):
         reason=type(error).__name__
     saved=load_snapshot(snapshot)
     print(f'Warning: {reason}; using production release snapshot {saved["tag"]}.',file=sys.stderr)
-    return saved
+    return saved, 'snapshot'
 
 if __name__=='__main__':
     import argparse

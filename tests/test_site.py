@@ -87,11 +87,31 @@ class SiteTests(unittest.TestCase):
         snapshot=ROOT/'data/releases.json'
         for code in (403,429,503):
             with patch('releases.fetch',side_effect=HTTPError('https://api.github.com/',code,'unavailable',{},None)):
-                self.assertEqual(latest(snapshot),load_snapshot(snapshot))
+                self.assertEqual(latest(snapshot),(load_snapshot(snapshot),'snapshot'))
         with patch('releases.fetch',side_effect=TimeoutError()):
-            self.assertEqual(latest(snapshot),load_snapshot(snapshot))
+            self.assertEqual(latest(snapshot),(load_snapshot(snapshot),'snapshot'))
         with patch('releases.fetch',side_effect=HTTPError('https://api.github.com/',401,'unauthorized',{},None)):
             with self.assertRaises(HTTPError): latest(snapshot)
+
+    def test_release_status_matches_build_source(self):
+        from unittest.mock import patch
+        import runpy
+        saved=json.loads((ROOT/'data/releases.json').read_text())
+        raw={'tag_name':saved['tag'],'published_at':saved['published'],'html_url':saved['url'],
+             'assets':[dict(a,browser_download_url=a['url'],updated_at=a.get('updated')) for a in saved['assets']]}
+        try:
+            for failed in (False,True):
+                mock={'side_effect':TimeoutError()} if failed else {'return_value':raw}
+                with patch('releases.fetch',**mock), patch.object(sys,'argv',['build.py']):
+                    runpy.run_path(str(ROOT/'scripts/build.py'),run_name='__main__')
+                for prefix in ('','cs/'):
+                    text=(ROOT/f'dist/{prefix}index.html').read_text()
+                    self.assertEqual('class="status-dot status-dot-github"' in text,not failed)
+                    self.assertIn('Saved release information' if failed else 'Release information from GitHub',
+                                  (ROOT/'dist/index.html').read_text())
+        finally:
+            subprocess.run([sys.executable,'scripts/build.py','--offline'],cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
+        self.assertNotIn('class="status-dot status-dot-github"',(ROOT/'dist/index.html').read_text())
 
     def test_sitemap_and_locales(self):
         import xml.etree.ElementTree as ET

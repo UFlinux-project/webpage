@@ -52,3 +52,5 @@ After deployment, inspect the custom-domain network requests to verify Cloudflar
 Assets keep their original filenames without content hashes or cache-busting parameters. Browsers may cache assets but must revalidate them before reuse. Language links show emoji flags alongside EN/CZ labels and accessible language-switch descriptions.
 
 The small site stylesheet is inlined into every document so first paint does not wait for a CSS request. The Ubuntu stylesheet loads with print media and switches to screen after loading, with display=swap. JavaScript-disabled browsers keep the system-font fallback and all navigation still works. Verify Cloudflare Fonts rewriting on the deployed custom domain.
+
+The release status dot is green only when the build successfully fetches release metadata from GitHub. Snapshot fallback and offline builds use a neutral dot. This reflects the data source at build time, not a live browser connectivity check.
