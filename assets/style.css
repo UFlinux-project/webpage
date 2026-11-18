@@ -48,3 +48,6 @@ html{scrollbar-gutter:stable}
 .language-select .site-icon-language{left:0}
 .language-select .site-icon-chevron-down{right:2px;font-size:.7rem}
 @media(max-width:1060px){.language-switcher{justify-self:end}}
+
+.cpu-examples{padding-inline-start:1.25rem;color:var(--muted);line-height:1.55}
+.cpu-examples li+li{margin-top:.45rem}

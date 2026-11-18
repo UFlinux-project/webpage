@@ -61,6 +61,14 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(target.is_file(),f'{file}: {link}')
                 if parsed.fragment and target.suffix=='.html':
                     self.assertIn(parsed.fragment,Document(target.read_text()).ids)
+    def test_x86_64_iso_is_the_first_download(self):
+        data=json.loads((ROOT/'tests/release-fixture.json').read_text())
+        iso=next(item['name'] for item in data['assets'] if item['key']=='x86_64')
+        for lang in ('','cs/'):
+            text=(ROOT/f'dist/{lang}downloads/index.html').read_text()
+            first_download=text.split('<article class=download-row>',1)[1].split('</article>',1)[0]
+            self.assertIn(iso,first_download)
+
     def test_every_image_has_one_recommendation(self):
         data=json.loads((ROOT/'tests/release-fixture.json').read_text())
         keys=[x['key'] for x in data['assets'] if x['key']]
