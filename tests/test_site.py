@@ -8,13 +8,16 @@ from releases import normalize, ARCHES, TARGETS
 
 class Document(HTMLParser):
     def __init__(self,text):
-        super().__init__(); self.links=[]; self.ids=set(); self.lang=None; self.metadata={}; self.canonical=None; self.feed(text)
+        super().__init__(); self.links=[]; self.ids=set(); self.lang=None; self.metadata={}; self.canonical=None; self.alternates={}; self.icons=[]; self.feed(text)
     def handle_starttag(self,tag,attrs):
         attrs=dict(attrs)
         if 'id' in attrs: self.ids.add(attrs['id'])
         if tag=='html': self.lang=attrs.get('lang')
         if tag=='meta': self.metadata[attrs.get('property',attrs.get('name'))]=attrs.get('content')
         if tag=='link' and attrs.get('rel')=='canonical': self.canonical=attrs.get('href')
+        if tag=='link' and attrs.get('rel')=='alternate': self.alternates[attrs.get('hreflang')]=attrs.get('href')
+        if tag=='link' and 'icon' in attrs.get('rel','').split():
+            self.icons.append((attrs.get('href'),attrs.get('type'),attrs.get('sizes')))
         for key in ('href','src'):
             if attrs.get(key,'').startswith('/'): self.links.append(attrs[key])
 
@@ -22,6 +25,31 @@ class SiteTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         subprocess.run([sys.executable,'scripts/build.py','--offline'],cwd=ROOT,check=True)
+    def test_build_minifies_local_assets(self):
+        out=ROOT/'dist'
+        for name in ('assets/style.css','assets/site.js','assets/logo.svg'):
+            with self.subTest(asset=name):
+                self.assertLess((out/name).stat().st_size,(ROOT/name).stat().st_size)
+        catalog=(out/'releases.json').read_text()
+        self.assertEqual(catalog,json.dumps(json.loads(catalog),ensure_ascii=False,separators=(',',':')))
+        self.assertNotIn('\n',(out/'index.html').read_text())
+
+    def test_pages_link_to_one_stylesheet(self):
+        out=ROOT/'dist'
+        for file in out.rglob('*.html'):
+            text=file.read_text()
+            self.assertEqual(Document(text).links.count('/assets/style.css'),1,str(file))
+            self.assertNotIn('<style',text,str(file))
+
+    def test_favicon_preference_on_every_page(self):
+        expected=[
+            ('/favicon.ico','image/vnd.microsoft.icon','32x32'),
+            ('/favicon.png','image/png','32x32'),
+            ('/favicon.svg','image/svg+xml','any'),
+        ]
+        for file in (ROOT/'dist').rglob('*.html'):
+            self.assertEqual(Document(file.read_text()).icons,expected,str(file))
+
     def test_local_links_and_anchors(self):
         out=ROOT/'dist'
         for file in out.rglob('*.html'):
@@ -141,8 +169,8 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(len(locations),8)
         self.assertFalse(any('/image/' in x or '/choose/' in x for x in locations))
         for route in ('','downloads/','guide/','credits/'):
-            en=(ROOT/f'dist/{route}index.html').read_text()
-            cs=(ROOT/f'dist/cs/{route}index.html').read_text()
-            self.assertIn('hreflang="cs"',en)
-            self.assertIn('lang="cs"',cs)
+            en=Document((ROOT/f'dist/{route}index.html').read_text())
+            cs=Document((ROOT/f'dist/cs/{route}index.html').read_text())
+            self.assertEqual(en.alternates['cs'],cs.canonical)
+            self.assertEqual(cs.lang,'cs')
 if __name__=='__main__': unittest.main()

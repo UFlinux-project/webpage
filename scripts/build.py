@@ -1,20 +1,18 @@
 """Build complete static documents. Builds use live release metadata or a maintained production snapshot."""
-import html, json, os, shutil, sys
+import html, json, os, shutil, subprocess, sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
 from releases import ARCHES, REPO, TARGETS, latest
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'dist'
+FALLBACK_ICONS=('favicon.ico','favicon.png')
 origin=os.getenv('SITE_ORIGIN','https://uflinux.org').rstrip('/')
 if '--offline' in sys.argv:
     catalog=json.loads((ROOT/'tests/release-fixture.json').read_text())
     catalog_source='snapshot'
 else:
     catalog,catalog_source=latest(ROOT/'data/releases.json')
-if OUT.exists(): shutil.rmtree(OUT)
-OUT.mkdir()
-shutil.copytree(ROOT/'assets',OUT/'assets',ignore=shutil.ignore_patterns('ivy.jpg'))
-# Keep original asset filenames and stable URLs across builds.
-asset={'/'+file.relative_to(OUT).as_posix(): file for file in (OUT/'assets').rglob('*') if file.is_file()}
 def a(path):
     url='/assets/'+path
     if url not in asset: raise FileNotFoundError(path)
@@ -52,8 +50,10 @@ def render(lang,route,title,description,body,index=True):
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)} · UFlinux">
 <meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{origin}{a('og-image.jpg')}">
 <meta name="twitter:image:alt" content="{tr('Dark Ivy wallpaper: dark leaves with water droplets','Tapeta Dark Ivy: tmavé listy s kapkami vody')}">
-<link rel="icon" href="{a('logo.svg')}" type="image/svg+xml">
-<style>{(ROOT/'assets/site.css').read_text()}</style>
+<link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon" sizes="32x32">
+<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="stylesheet" href="{a('style.css')}" hx-preserve="true" id="site-styles">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&amp;display=swap" media="print" onload="&quot;use strict&quot;; this.onload=null; this.media='all';" hx-preserve="true" id="ubuntu-fonts">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/fontawesome.min.css" integrity="sha384-m8DKa0MtZAZlyNgF18TSkQRYTPDY0sEELpwK2YijfYnVFH8kxiaO6hvopM168nue" crossorigin="anonymous" media="print" onload="&quot;use strict&quot;; this.onload=null; this.media='all';" hx-preserve="true" id="fa-fontawesome">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/solid.min.css" integrity="sha384-p/nJzgOJxEnSeUkMQ0nk5oPsUT5x8eOWi6pxU2ls9qcO9B78dCvZk0JSAOXWXUQN" crossorigin="anonymous" media="print" onload="&quot;use strict&quot;; this.onload=null; this.media='all';" hx-preserve="true" id="fa-solid">
@@ -165,13 +165,29 @@ def build_language(lang):
     credits=intro(t('CREDITS','AUTOŘI'),t('Built on shared work.','Postaveno na společné práci.'),t('Thank you to the people behind the project and its artwork.','Děkujeme lidem, kteří tvoří projekt a jeho vzhled.'))
     credits+=f'<div class="prose"><p>Dark Ivy — Garrett LeSage / GNOME, <a href="https://creativecommons.org/licenses/by-sa/3.0/" hx-boost="false">CC BY-SA 3.0</a>. {t("Resized and converted to WebP for this site; derivatives retain the same license.","Pro tento web zmenšeno a převedeno do WebP; odvozené obrazy zachovávají stejnou licenci.")} <a href="https://github.com/GNOME/gnome-backgrounds/tree/3.38.0" hx-boost="false">{t("Original source","Původní zdroj")} ↗</a></p><p>UFlinux logo — UFlinux project, GPL-3.0-only. {t("Leaf and stem merged into one continuous vector silhouette; original circular badge retained.","List a stonek sloučeny do jedné souvislé vektorové siluety; původní kruhový znak zachován.")} <a href="{a("LOGO-LICENSE.txt")}" hx-boost="false">GPL-3.0</a> · <a href="https://docs.uflinux.org{'/cs' if cs else ''}/developer/artwork-and-licenses/" hx-boost="false">{t("Source and attribution","Zdroj a autorství")}</a></p><p>Ubuntu — Canonical Ltd., <a href="/assets/fonts/LICENSE.txt" hx-boost="false">Ubuntu Font Licence</a>.</p><p>Font Awesome Free 7.3.1 — <a href="https://fontawesome.com/license/free" hx-boost="false">SIL OFL 1.1 / MIT / CC BY 4.0</a>.</p><p>HTMX 4.0.1 — <a href="{a("vendor/LICENSE.txt")}" hx-boost="false">Zero-Clause BSD</a>.</p></div>'
     page('/credits/',t('Artwork and licenses','Autoři a licence'),t('Artwork attribution and licenses for the UFlinux website.','Autoři grafiky a licence webu UFlinux.'),credits)
-for lang in ('en','cs'): build_language(lang)
-(OUT/'releases.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2))
-(OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join('<url><loc>'+origin+p+'</loc></url>' for p in sitemap)+'</urlset>')
-(OUT/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+origin+'/sitemap.xml\n')
-(OUT/'_headers').write_text('/assets/*\n  Cache-Control: public, max-age=0, must-revalidate\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/releases.json\n  Cache-Control: public, max-age=0, must-revalidate\n')
-render('en','/404/','Page not found','This page could not be found.','<section class="intro"><p class="eyebrow">404</p><h1>A path less travelled.</h1><p>Page not found. Stránka nebyla nalezena.</p><a class="button" href="/">Home</a> <a href="/cs/">Česky</a></section>',False)
-errorfile=OUT/'404/index.html'
-errorfile.write_text(errorfile.read_text().replace('/cs/404/','/cs/').replace('/404/','/'))
-shutil.move(errorfile,OUT/'404.html'); (OUT/'404').rmdir()
-print(f'Built {len(list(OUT.rglob("*.html")))} pages in {OUT}')
+# Publish the completed build only after minification succeeds.
+dist=ROOT/'dist'
+with TemporaryDirectory(prefix='.build-',dir=ROOT) as directory:
+    OUT=Path(directory)/'dist'
+    shutil.copytree(ROOT/'assets',OUT/'assets',ignore=shutil.ignore_patterns('ivy.jpg',*FALLBACK_ICONS))
+    for icon_file in FALLBACK_ICONS:
+        shutil.copyfile(ROOT/'assets'/icon_file,OUT/icon_file)
+    # Match the raster fallbacks' intrinsic dimensions for browser icon selection.
+    ET.register_namespace('', 'http://www.w3.org/2000/svg')
+    favicon=ET.parse(ROOT/'assets/logo.svg')
+    favicon.getroot().attrib.update(width='32',height='32')
+    favicon.write(OUT/'favicon.svg',encoding='utf-8')
+    asset={'/'+file.relative_to(OUT).as_posix() for file in (OUT/'assets').rglob('*') if file.is_file()}
+    for lang in ('en','cs'): build_language(lang)
+    (OUT/'releases.json').write_text(json.dumps(catalog,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+    (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join('<url><loc>'+origin+p+'</loc></url>' for p in sitemap)+'</urlset>')
+    (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+origin+'/sitemap.xml\n')
+    (OUT/'_headers').write_text('/assets/*\n  Cache-Control: public, max-age=0, must-revalidate\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/releases.json\n  Cache-Control: public, max-age=0, must-revalidate\n')
+    render('en','/404/','Page not found','This page could not be found.','<section class="intro"><p class="eyebrow">404</p><h1>A path less travelled.</h1><p>Page not found. Stránka nebyla nalezena.</p><a class="button" href="/">Home</a> <a href="/cs/">Česky</a></section>',False)
+    errorfile=OUT/'404/index.html'
+    errorfile.write_text(errorfile.read_text().replace('/cs/404/','/cs/').replace('/404/','/'))
+    shutil.move(errorfile,OUT/'404.html'); (OUT/'404').rmdir()
+    subprocess.run(['node',str(ROOT/'scripts/minify.mjs'),str(OUT)],check=True)
+    if dist.exists(): shutil.rmtree(dist)
+    OUT.rename(dist)
+print(f'Built {len(list(dist.rglob("*.html")))} pages in {dist}')

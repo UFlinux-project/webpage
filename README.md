@@ -1,10 +1,11 @@
 # UFlinux website
 
-English and Czech static website for UFlinux. Python 3.10+ builds full HTML documents; HTMX 4.0.1 loaded from cdnjs progressively enhances internal links with mouseover preloading. No runtime backend, browser API calls, analytics, or npm dependencies.
+English and Czech static website for UFlinux. Python 3.10+ builds full HTML documents, and HTMX 4.0.1 loaded from cdnjs progressively enhances internal links with mouseover preloading. Node.js 22+ runs the build-time minifiers.
 
 ## Build and preview
 
 ```sh
+npm ci
 python3 scripts/build.py
 python3 -m http.server 8000 --directory dist
 ```
@@ -31,6 +32,7 @@ The canonical origin defaults to https://uflinux.org. Change it through `SITE_OR
 - `scripts/build.py`: bilingual page rendering and static wizard graph.
 - `scripts/releases.py`: shared release normalization and refresh checker.
 - `assets/`: optimized wallpaper, CSS and site JS. HTMX core and its preload/head extensions use pinned cdnjs URLs with subresource integrity and deferred loading.
+- `scripts/minify.mjs`: minifies generated HTML and local CSS, JavaScript, and SVG files. The Python generator writes compact release JSON and sitemap XML.
 - `tests/`: offline release fixture and route/catalog tests.
 
 The wizard only recommends recognized assets actually present in the latest stable release. Unknown ISO/disk images appear in the list without recommendation. Results are noindex and omitted from the sitemap. Language links use full navigation to update document language reliably. External image downloads never use HTMX or preloading.
@@ -38,6 +40,13 @@ The wizard only recommends recognized assets actually present in the latest stab
 Edit bilingual strings together in the generator. Images link directly to GitHub Releases; the guide and navbar link to docs.uflinux.org, with Czech documentation used for Czech pages. Hardware status copy should be reviewed when project support changes.
 
 Artwork sources, adaptations, and licenses are credited on /credits/ and /cs/credits/. To recreate wallpaper assets, run `python3 scripts/prepare-assets.py` with Pillow installed; this is not needed for builds. Preserve the original Ivy JPEG as the source for those derivatives.
+
+The main site hosts `/favicon.svg`, `/favicon.png`, and `/favicon.ico` for all three UFlinux sites. The build derives the SVG from the logo at 32 × 32 pixels. To regenerate the matching raster fallbacks, use ImageMagick.
+
+```sh
+magick -background none -density 192 assets/logo.svg -resize 32x32 -strip PNG32:assets/favicon.png
+magick assets/favicon.png -strip assets/favicon.ico
+```
 
 ## Performance verification
 
@@ -51,7 +60,7 @@ After deployment, inspect the custom-domain network requests to verify Cloudflar
 
 Assets keep their original filenames without content hashes or cache-busting parameters. Browsers may cache assets but must revalidate them before reuse. The language selector matches the documentation site: a native English/Čeština menu with translation and caret icons. It keeps the equivalent page or wizard step and provides a link fallback without JavaScript.
 
-The small site stylesheet is inlined into every document so first paint does not wait for a CSS request. The Ubuntu stylesheet loads with print media and switches to screen after loading, with display=swap. JavaScript-disabled browsers keep the system-font fallback and all navigation still works. Verify Cloudflare Fonts rewriting on the deployed custom domain.
+The build writes the minified stylesheet to `dist/assets/style.css`. Every document links to this stylesheet in the head, and HTMX keeps the loaded copy during navigation. The Ubuntu stylesheet loads with print media and switches to screen after loading, with display=swap. JavaScript-disabled browsers keep the system-font fallback and all navigation still works. Verify Cloudflare Fonts rewriting on the deployed custom domain.
 
 The release status dot is green only when the build successfully fetches release metadata from GitHub. Snapshot fallback and offline builds use a neutral dot. This reflects the data source at build time, not a live browser connectivity check.
 
