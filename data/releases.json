@@ -1,143 +1,143 @@
 {
-  "tag": "v0.2.14",
-  "published": "2026-11-20T09:49:14Z",
-  "url": "https://github.com/UFlinux-project/uflinux3/releases/tag/v0.2.14",
+  "tag": "v0.2.16",
+  "published": "2026-11-21T00:48:45Z",
+  "url": "https://github.com/UFlinux-project/uflinux3/releases/tag/v0.2.16",
   "assets": [
     {
       "name": "SHA256SUMS",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/SHA256SUMS",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/SHA256SUMS",
       "size": 551,
       "key": null,
-      "updated": "2026-11-20T09:47:58Z",
-      "digest": "sha256:21b24f7b844417204b4dad96e81dc6100af8b692a1d6c7f013438c3aab14b78b"
+      "updated": "2026-11-21T00:47:18Z",
+      "digest": "sha256:ce3936c545ab2fa756da7898e37206284244a2ada997c3274e1736762cf4d179"
     },
     {
-      "name": "uflinux-0.2.14-aarch64.iso",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-aarch64.iso",
-      "size": 1855131648,
+      "name": "uflinux-0.2.16-aarch64.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-aarch64.iso",
+      "size": 1855168512,
       "key": "aarch64",
-      "updated": "2026-11-20T09:48:18Z",
-      "digest": "sha256:7d87d51b2633e49a6d05e18616961c2559827fd6551c73cc7f24903f99a0da5a"
+      "updated": "2026-11-21T00:47:50Z",
+      "digest": "sha256:9e06a41e03749757542ba5b38983852ea45049c97a6183b35ad820bdcb93f12e"
     },
     {
-      "name": "uflinux-0.2.14-armv7.iso",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-armv7.iso",
-      "size": 1331824640,
+      "name": "uflinux-0.2.16-armv7.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-armv7.iso",
+      "size": 1331843072,
       "key": "armv7",
-      "updated": "2026-11-20T09:48:23Z",
-      "digest": "sha256:8cb3f87ff04a7094f1ed520eb6357e712435267d6d863db48596bd72a4b03e12"
+      "updated": "2026-11-21T00:47:17Z",
+      "digest": "sha256:8b053506a654824d35864cb272fdbce7595784c50b148bed4b3e1b03f8db8d72"
     },
     {
-      "name": "uflinux-0.2.14-ppc64le.iso",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-ppc64le.iso",
-      "size": 1502287872,
+      "name": "uflinux-0.2.16-ppc64le.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-ppc64le.iso",
+      "size": 1502300160,
       "key": "ppc64le",
-      "updated": "2026-11-20T09:47:58Z",
-      "digest": "sha256:4d0f51fd8a7fa2101bd00b92e2e1de74dcb293669fd0cbcef92efd0e99bef89b"
+      "updated": "2026-11-21T00:48:04Z",
+      "digest": "sha256:7020e8812443e154ec5cf23afebd9191601e113cc37f3a969c3b72e7143e6053"
     },
     {
-      "name": "uflinux-0.2.14-qcs6490-aarch64.img.zst",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-qcs6490-aarch64.img.zst",
-      "size": 1335153271,
+      "name": "uflinux-0.2.16-qcs6490-aarch64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-qcs6490-aarch64.img.zst",
+      "size": 1336244681,
       "key": "qcs6490",
-      "updated": "2026-11-20T09:50:35Z",
-      "digest": "sha256:58eebbeb41d333dcde6b742495b63a4b737686b8842a84cedff51e817459c002"
+      "updated": "2026-11-21T00:49:58Z",
+      "digest": "sha256:4dec47523f8eb4be47474fc58e7e22af0180551fb15995f8c537867381436f14"
     },
     {
-      "name": "uflinux-0.2.14-qcs6490-aarch64.img.zst.sha256",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-qcs6490-aarch64.img.zst.sha256",
+      "name": "uflinux-0.2.16-qcs6490-aarch64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-qcs6490-aarch64.img.zst.sha256",
       "size": 105,
       "key": null,
-      "updated": "2026-11-20T09:50:28Z",
-      "digest": "sha256:87b895cc414204a95f1a70e4a6f3ad54cadaa1ab63454bbfc0d7986d392d58cd"
+      "updated": "2026-11-21T00:49:51Z",
+      "digest": "sha256:4580ab91cf9d6f6b4ddd512cca24265fff426c3da7a3a0975ed04ad58f3994af"
     },
     {
-      "name": "uflinux-0.2.14-riscv64.iso",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-riscv64.iso",
-      "size": 1276821504,
+      "name": "uflinux-0.2.16-riscv64.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-riscv64.iso",
+      "size": 1276837888,
       "key": "riscv64",
-      "updated": "2026-11-20T09:47:48Z",
-      "digest": "sha256:10663c059a99213c287698d412b59602ed71cb6549b7f1830ede11b0973c7e79"
+      "updated": "2026-11-21T00:47:12Z",
+      "digest": "sha256:8fcd36695c9d9647cdbcdee03c2f55ce1d8b151b222aff58fc303d09b9ea89a0"
     },
     {
-      "name": "uflinux-0.2.14-rpi-aarch64.img.zst",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-rpi-aarch64.img.zst",
-      "size": 1160906347,
+      "name": "uflinux-0.2.16-rpi-aarch64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-rpi-aarch64.img.zst",
+      "size": 1161920991,
       "key": "rpi",
-      "updated": "2026-11-20T09:50:29Z",
-      "digest": "sha256:3316cd44cb533692be04d921110a0fbe2f79813ad31111069eab0a8ac75f572f"
+      "updated": "2026-11-21T00:49:59Z",
+      "digest": "sha256:951396b8aba146def537f4a320beaff07ab8e2e5a044cbea6651634c8da728e9"
     },
     {
-      "name": "uflinux-0.2.14-rpi-aarch64.img.zst.sha256",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-rpi-aarch64.img.zst.sha256",
+      "name": "uflinux-0.2.16-rpi-aarch64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-rpi-aarch64.img.zst.sha256",
       "size": 101,
       "key": null,
-      "updated": "2026-11-20T09:50:29Z",
-      "digest": "sha256:35f608c649c81f2d73e6f29d77cd2c71015f06e3290b41f98aefae793403748e"
+      "updated": "2026-11-21T00:49:51Z",
+      "digest": "sha256:4951426504fae66c0629356cca91d475808ada92aa21d17d29288eef34c7b007"
     },
     {
-      "name": "uflinux-0.2.14-spacemit-k1-riscv64.img.zst",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-spacemit-k1-riscv64.img.zst",
-      "size": 1127143786,
+      "name": "uflinux-0.2.16-spacemit-k1-riscv64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-spacemit-k1-riscv64.img.zst",
+      "size": 1127576142,
       "key": "spacemit-k1",
-      "updated": "2026-11-20T09:50:28Z",
-      "digest": "sha256:2cba130fa08572b26a86bfe36b1c0e9ad54c63ae2dc590679cf36859be94ef68"
+      "updated": "2026-11-21T00:49:50Z",
+      "digest": "sha256:16700104f4986594b593239f3549114041aa20b20e2548fa65f80abfe486f644"
     },
     {
-      "name": "uflinux-0.2.14-spacemit-k1-riscv64.img.zst.sha256",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-spacemit-k1-riscv64.img.zst.sha256",
+      "name": "uflinux-0.2.16-spacemit-k1-riscv64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-spacemit-k1-riscv64.img.zst.sha256",
       "size": 109,
       "key": null,
-      "updated": "2026-11-20T09:50:30Z",
-      "digest": "sha256:1c8f1855352aaad727c4a66142e360ffc053d1db143062d518f12452cf50e68d"
+      "updated": "2026-11-21T00:49:52Z",
+      "digest": "sha256:21c6294592ac8d00163498e294e9828d347a732e86ac35d2c4d95761e97f91c6"
     },
     {
-      "name": "uflinux-0.2.14-vm-aarch64.img.zst",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-vm-aarch64.img.zst",
-      "size": 1182331783,
+      "name": "uflinux-0.2.16-vm-aarch64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-vm-aarch64.img.zst",
+      "size": 1182377170,
       "key": "vm-aarch64",
-      "updated": "2026-11-20T09:50:38Z",
-      "digest": "sha256:93e6c545d52bbfa8cf7516013fac491a90746bd8eb4bb3bfbbadb5efeefdd5c4"
+      "updated": "2026-11-21T00:49:57Z",
+      "digest": "sha256:8f65aa612fe25fed88840710555562a20f2c3baa86dc5e9863120b65a3cef108"
     },
     {
-      "name": "uflinux-0.2.14-vm-aarch64.img.zst.sha256",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-vm-aarch64.img.zst.sha256",
+      "name": "uflinux-0.2.16-vm-aarch64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-vm-aarch64.img.zst.sha256",
       "size": 100,
       "key": null,
-      "updated": "2026-11-20T09:50:29Z",
-      "digest": "sha256:f3d2b72e52d4632aea3766ddda9bb0f1d408164cf44103cdddea20db6d17d902"
+      "updated": "2026-11-21T00:49:52Z",
+      "digest": "sha256:41eb0ec8e5ef28f75f39c75e9e1edae6495dc678fa7cddef5e39c2b39280deec"
     },
     {
-      "name": "uflinux-0.2.14-vm-x86_64.img.zst",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-vm-x86_64.img.zst",
-      "size": 1204073786,
+      "name": "uflinux-0.2.16-vm-x86_64.img.zst",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-vm-x86_64.img.zst",
+      "size": 1207447006,
       "key": "vm-x86_64",
-      "updated": "2026-11-20T09:50:33Z",
-      "digest": "sha256:6540f1e15c472bad2728ccd12bb037789322dcfb943391ca20fd3cb13361bcf9"
+      "updated": "2026-11-21T00:49:59Z",
+      "digest": "sha256:6dcff550a921169001b0c4d8f73ad8f4da63d705060ae756a827f17307ada05a"
     },
     {
-      "name": "uflinux-0.2.14-vm-x86_64.img.zst.sha256",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-vm-x86_64.img.zst.sha256",
+      "name": "uflinux-0.2.16-vm-x86_64.img.zst.sha256",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-vm-x86_64.img.zst.sha256",
       "size": 99,
       "key": null,
-      "updated": "2026-11-20T09:50:30Z",
-      "digest": "sha256:53399a3e12555488883c55e6616c155f3bd14b8b61dac489178d6f2c8b706ecb"
+      "updated": "2026-11-21T00:49:53Z",
+      "digest": "sha256:520b12410eb6d848e099200ec70cf9391cbfa61a79df3d72d22a7bc4e3f84789"
     },
     {
-      "name": "uflinux-0.2.14-x86.iso",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-x86.iso",
+      "name": "uflinux-0.2.16-x86.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-x86.iso",
       "size": 1749565440,
       "key": "x86",
-      "updated": "2026-11-20T09:48:35Z",
-      "digest": "sha256:d770d7cd11cff5f62d3503f68b4547db8c9b96f4557c9845f6abc26a6ac7e1cb"
+      "updated": "2026-11-21T00:47:51Z",
+      "digest": "sha256:316766a8bf57ea90466ca43193856944ff6336360763e72e520b505268416f6f"
     },
     {
-      "name": "uflinux-0.2.14-x86_64.iso",
-      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.14/uflinux-0.2.14-x86_64.iso",
+      "name": "uflinux-0.2.16-x86_64.iso",
+      "url": "https://github.com/UFlinux-project/uflinux3/releases/download/v0.2.16/uflinux-0.2.16-x86_64.iso",
       "size": 1923727360,
       "key": "x86_64",
-      "updated": "2026-11-20T09:48:12Z",
-      "digest": "sha256:8a4e239026b79f8fa4e6ca73ca5af5f7ac43d9e1c96d49bb43e2a3425679f161"
+      "updated": "2026-11-21T00:47:42Z",
+      "digest": "sha256:a15415a2fadcb678b531280ef06b3f96f7af35b17fe079cdbd302081a882592f"
     }
   ]
 }
