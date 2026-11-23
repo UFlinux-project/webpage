@@ -1,8 +1,8 @@
 """Shared, deterministic GitHub release normalization."""
 import json, os, re, sys, urllib.request, urllib.error
 from pathlib import Path
-API = 'https://api.github.com/repos/UFlinux-project/uflinux3/releases/latest'
-REPO = 'https://github.com/UFlinux-project/uflinux3'
+API = 'https://api.github.com/repos/UFlinux-project/uflinux/releases/latest'
+REPO = 'https://github.com/UFlinux-project/uflinux'
 ARCHES = ('x86_64','x86','aarch64','armv7','ppc64le','riscv64')
 TARGETS = {'rpi':('Raspberry Pi 3 / 4 / 5','aarch64'), 'qcs6490':('Dragon Q6A / QCS6490','aarch64'), 'spacemit-k1':('SpacemiT K1 / Orange Pi RV2','riscv64'), 'vm-x86_64':('VM · Intel / AMD','x86_64'), 'vm-aarch64':('VM · ARM64','aarch64')}
 def fetch(url):

@@ -81,9 +81,9 @@ class SiteTests(unittest.TestCase):
                 self.assertIn(item['url'],text)
                 self.assertIn('noindex,follow',text)
     def test_normalization_and_unknown_variants(self):
-        raw={'tag_name':'v1.2.3','published_at':'2026-01-01','html_url':'https://github.com/UFlinux-project/uflinux3/releases/tag/v1.2.3','assets':[]}
+        raw={'tag_name':'v1.2.3','published_at':'2026-01-01','html_url':'https://github.com/UFlinux-project/uflinux/releases/tag/v1.2.3','assets':[]}
         for name in ('uflinux-1.2.3-x86_64.iso','uflinux-1.2.3-rpi-aarch64.img.zst','custom.iso'):
-            raw['assets'].append({'name':name,'size':123,'browser_download_url':'https://github.com/UFlinux-project/uflinux3/releases/download/v1.2.3/'+name})
+            raw['assets'].append({'name':name,'size':123,'browser_download_url':'https://github.com/UFlinux-project/uflinux/releases/download/v1.2.3/'+name})
         data=normalize(raw)
         self.assertEqual({a['key'] for a in data['assets']},{'x86_64','rpi',None})
         raw['prerelease']=True
