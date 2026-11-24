@@ -3,7 +3,7 @@ import json, os, re, sys, urllib.request, urllib.error
 from pathlib import Path
 API = 'https://api.github.com/repos/UFlinux-project/uflinux/releases/latest'
 REPO = 'https://github.com/UFlinux-project/uflinux'
-ARCHES = ('x86_64','x86','aarch64','armv7','ppc64le','riscv64')
+ARCHES = ('x86_64','aarch64','ppc64le','riscv64')
 TARGETS = {'rpi':('Raspberry Pi 3 / 4 / 5','aarch64'), 'qcs6490':('Dragon Q6A / QCS6490','aarch64'), 'spacemit-k1':('SpacemiT K1 / Orange Pi RV2','riscv64'), 'vm-x86_64':('VM · Intel / AMD','x86_64'), 'vm-aarch64':('VM · ARM64','aarch64')}
 def fetch(url):
     headers={'User-Agent':'UFlinux-website','Accept':'application/vnd.github+json'}
@@ -14,13 +14,16 @@ def fetch(url):
 def normalize(raw):
     if raw.get('draft') or raw.get('prerelease') or not raw.get('tag_name'):
         raise ValueError('Expected a published stable release')
+    version=re.escape(raw['tag_name'].removeprefix('v'))
+    retired=re.compile(r'uflinux-'+version+r'-(?:.+-)?(?:x86|armv7)\.(?:iso|img\.zst)(?:\.sha256)?')
     assets=[]
     for a in raw['assets']:
         name=a['name']; url=a['browser_download_url']
         if not url.startswith(REPO+'/releases/download/'):
             raise ValueError('Unexpected release asset origin')
+        if retired.fullmatch(name):
+            continue
         key=None
-        version=re.escape(raw['tag_name'].removeprefix('v'))
         for arch in ARCHES:
             if re.fullmatch(r'uflinux-'+version+'-'+arch+r'\.iso',name): key=arch
         for target,(_,arch) in TARGETS.items():

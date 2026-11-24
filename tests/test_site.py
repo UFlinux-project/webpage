@@ -82,10 +82,14 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('noindex,follow',text)
     def test_normalization_and_unknown_variants(self):
         raw={'tag_name':'v1.2.3','published_at':'2026-01-01','html_url':'https://github.com/UFlinux-project/uflinux/releases/tag/v1.2.3','assets':[]}
-        for name in ('uflinux-1.2.3-x86_64.iso','uflinux-1.2.3-rpi-aarch64.img.zst','custom.iso'):
+        for name in ('uflinux-1.2.3-x86_64.iso','uflinux-1.2.3-rpi-aarch64.img.zst','custom.iso',
+                     'uflinux-1.2.3-x86.iso','uflinux-1.2.3-armv7.iso',
+                     'uflinux-1.2.3-pc-xfs-x86.img.zst','uflinux-1.2.3-pc-xfs-x86.img.zst.sha256'):
             raw['assets'].append({'name':name,'size':123,'browser_download_url':'https://github.com/UFlinux-project/uflinux/releases/download/v1.2.3/'+name})
         data=normalize(raw)
         self.assertEqual({a['key'] for a in data['assets']},{'x86_64','rpi',None})
+        self.assertEqual({a['name'] for a in data['assets']},
+                         {'uflinux-1.2.3-x86_64.iso','uflinux-1.2.3-rpi-aarch64.img.zst','custom.iso'})
         raw['prerelease']=True
         with self.assertRaises(ValueError): normalize(raw)
     def test_catalog_deterministic_and_rejects_foreign_urls(self):

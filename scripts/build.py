@@ -4,12 +4,12 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from releases import ARCHES, REPO, TARGETS, latest
+from releases import ARCHES, REPO, TARGETS, latest, load_snapshot
 ROOT=Path(__file__).resolve().parents[1]
 FALLBACK_ICONS=('favicon.ico','favicon.png')
 origin=os.getenv('SITE_ORIGIN','https://uflinux.org').rstrip('/')
 if '--offline' in sys.argv:
-    catalog=json.loads((ROOT/'tests/release-fixture.json').read_text())
+    catalog=load_snapshot(ROOT/'tests/release-fixture.json')
     catalog_source='snapshot'
 else:
     catalog,catalog_source=latest(ROOT/'data/releases.json')
@@ -133,7 +133,7 @@ def build_language(lang):
         ('/downloads/choose/board/',t('Single-board computer','Jednodeskový počítač'),'Raspberry Pi / QCS6490 / SpacemiT'),
         ('/downloads/choose/other/',t('Other hardware / I’m not sure','Jiný hardware / Nevím'),t('Architecture help','Nápověda k architektuře'))],'/downloads/')
     result=lambda key:'/downloads/image/'+key+'/'
-    step('/downloads/choose/pc/',t('Which processor does it use?','Jaký procesor používá?'),[(result('x86_64'),'Intel / AMD · 64-bit',t('Most modern PCs and laptops','Většina moderních PC a notebooků')),(result('x86'),'Intel / AMD · 32-bit',t('Older x86 computers','Starší počítače x86')),('/downloads/choose/other/',t('I’m not sure','Nevím'),t('How to check your architecture','Jak zjistit architekturu'))])
+    step('/downloads/choose/pc/',t('Which processor does it use?','Jaký procesor používá?'),[(result('x86_64'),'Intel / AMD · 64-bit',t('Most modern PCs and laptops','Většina moderních PC a notebooků')),('/downloads/choose/other/',t('I’m not sure','Nevím'),t('How to check your architecture','Jak zjistit architekturu'))])
     step('/downloads/choose/vm/',t('Which guest architecture?','Jaká je architektura virtuálního stroje?'),[('/downloads/choose/vm/'+arch+'/',label,t('Match the guest configuration, not the browser','Podle nastavení VM, nikoli prohlížeče')) for arch,label in [('x86_64','Intel / AMD · x86_64'),('aarch64','ARM64 · aarch64')]])
     for arch in ('x86_64','aarch64'):
         step('/downloads/choose/vm/'+arch+'/',t('How would you like to start?','Jak chcete začít?'),[(result(arch),t('Live desktop / installer','Živý desktop / instalátor'),'ISO'),(result('vm-'+arch),t('Installed virtual disk','Předinstalovaný virtuální disk'),'IMG · Zstandard · UEFI')],'/downloads/choose/vm/')
@@ -159,18 +159,14 @@ def build_language(lang):
     cpu_examples=[
         ('x86_64',t('64-bit Intel and AMD PCs, such as Intel Core 2 Duo, Core i3/i5/i7/i9, AMD Athlon 64 and Ryzen.',
                     '64bitové počítače s procesory Intel a AMD, například Intel Core 2 Duo, Core i3/i5/i7/i9, AMD Athlon 64 a Ryzen.')),
-        ('x86',t('Older 32-bit (i686) PCs, such as those with an Intel Pentium M or Intel Core Duo.',
-                 'Starší 32bitové počítače (i686), například s procesorem Intel Pentium M nebo Intel Core Duo.')),
         ('aarch64',t('64-bit Arm (ARM64), such as Cortex-A53, A55, A72 and A76.',
                      '64bitové procesory Arm (ARM64), například Cortex-A53, A55, A72 a A76.')),
-        ('armv7',t('32-bit Armv7-A with hardware floating point, such as Cortex-A7, A8, A9 and A15.',
-                    '32bitové procesory Armv7-A s hardwarovou podporou výpočtů s plovoucí řádovou čárkou, například Cortex-A7, A8, A9 a A15.')),
     ]
     cpu_guide=f"""
         <h3>{t('CPU architecture examples','Příklady architektur procesorů')}</h3>
         <ul class="cpu-examples">{''.join(f'<li><strong>{arch}</strong> — {examples}</li>' for arch,examples in cpu_examples)}</ul>
-        <p>{t('On Linux, <code>uname -m</code> reports the architecture of the running kernel. Check the exact CPU model if you are running a 32-bit system and want to install a 64-bit image. For Arm boards, check the boot firmware and use a board-specific image when available.',
-              'V Linuxu příkaz <code>uname -m</code> zobrazí architekturu běžícího jádra. Pokud používáte 32bitový systém a chcete nainstalovat 64bitový obraz, ověřte přesný model procesoru. U desek Arm ověřte zaváděcí firmware a použijte obraz pro konkrétní desku, pokud je k dispozici.')}</p>
+        <p>{t('On Linux, <code>uname -m</code> reports the architecture of the running kernel. For Arm boards, check the boot firmware and use a board-specific image when available.',
+              'V Linuxu příkaz <code>uname -m</code> zobrazí architekturu běžícího jádra. U desek Arm ověřte zaváděcí firmware a použijte obraz pro konkrétní desku, pokud je k dispozici.')}</p>
     """
     for number,title,text,url in [
         ('01',t('Choose the right image','Vyberte správný obraz'),t('Use a live ISO for a compatible computer or an installer VM. Use the dedicated installed disk image for a listed board or a UEFI VM.','Pro kompatibilní počítač nebo instalační VM použijte živé ISO. Pro uvedené desky nebo UEFI VM použijte příslušný předinstalovaný diskový obraz.'),docs+'reference/architectures/'),

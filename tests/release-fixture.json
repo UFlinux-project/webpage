@@ -20,14 +20,6 @@
       "digest": "sha256:497addc5a97c8b900650331af90f657080b4c2976a1296777e10be04112daa19"
     },
     {
-      "name": "uflinux-0.2.4-armv7.iso",
-      "url": "https://github.com/UFlinux-project/uflinux/releases/download/v0.2.4/uflinux-0.2.4-armv7.iso",
-      "size": 1554444288,
-      "key": "armv7",
-      "updated": "2026-11-17T13:37:32Z",
-      "digest": "sha256:c5852939d2e1e966db13e0a531322a2716f5ede245a3aa4ee568fb0ccee423bf"
-    },
-    {
       "name": "uflinux-0.2.4-ppc64le.iso",
       "url": "https://github.com/UFlinux-project/uflinux/releases/download/v0.2.4/uflinux-0.2.4-ppc64le.iso",
       "size": 1673783296,
@@ -122,14 +114,6 @@
       "key": null,
       "updated": "2026-11-17T13:40:19Z",
       "digest": "sha256:fd3b2925a85dee14d32f4ce2a86a2b3336c14ff718bff64d53cc05371c7646fb"
-    },
-    {
-      "name": "uflinux-0.2.4-x86.iso",
-      "url": "https://github.com/UFlinux-project/uflinux/releases/download/v0.2.4/uflinux-0.2.4-x86.iso",
-      "size": 1971978240,
-      "key": "x86",
-      "updated": "2026-11-17T13:36:46Z",
-      "digest": "sha256:4360b4c8eaafd4f73a3d86276a469f379278d5813c1fff1b697af803138ce462"
     },
     {
       "name": "uflinux-0.2.4-x86_64.iso",
