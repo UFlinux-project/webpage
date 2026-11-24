@@ -45,7 +45,7 @@ def structured_data(lang, route, canonical, title, description):
     if route in ('/', '/downloads/'):
         page['mainEntity'] = {'@id': software_id}
         graph.append({
-            '@type': 'SoftwareApplication',
+            '@type': 'OperatingSystem',
             '@id': software_id,
             'name': 'UFlinux',
             'url': origin + '/',

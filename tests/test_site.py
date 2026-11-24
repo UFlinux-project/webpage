@@ -1,7 +1,7 @@
 import json, re, subprocess, sys, unittest
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit, unquote
+from urllib.parse import urljoin, urlsplit, unquote
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from releases import normalize, ARCHES, TARGETS
@@ -209,11 +209,12 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(page['description'],doc.metadata['description'])
                 self.assertEqual(page['inLanguage'],doc.lang)
                 self.assertEqual('WebSite' in graph,home)
-                self.assertEqual('SoftwareApplication' in graph,home or downloads)
+                self.assertEqual('OperatingSystem' in graph,home or downloads)
                 if home:
                     self.assertEqual(page['isPartOf']['@id'],graph['WebSite']['@id'])
                 if home or downloads:
-                    software=graph['SoftwareApplication']
+                    software=graph['OperatingSystem']
+                    self.assertEqual(software['@id'],urljoin(doc.canonical,'/#software'))
                     self.assertEqual(page['mainEntity']['@id'],software['@id'])
                     self.assertEqual(software['softwareVersion'],version)
                     self.assertEqual(urlsplit(software['downloadUrl']).path,f'/{prefix}downloads/')
