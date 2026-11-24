@@ -20,12 +20,55 @@ def a(path):
 def esc(s): return html.escape(str(s),quote=True)
 def icon(name,style='solid'):
     return f'<span class="site-icon site-icon-{name}" aria-hidden="true"><i class="fa-{style} fa-{name}"></i></span>'
+
+def structured_data(lang, route, canonical, title, description):
+    site_id = origin + '/#website'
+    software_id = origin + '/#software'
+    page = {
+        '@type': 'CollectionPage' if route == '/downloads/' else 'WebPage',
+        '@id': canonical + '#webpage',
+        'url': canonical,
+        'name': title,
+        'description': description,
+        'inLanguage': lang,
+        'isPartOf': {'@id': site_id},
+    }
+    graph = [page]
+    if route == '/':
+        graph.append({
+            '@type': 'WebSite',
+            '@id': site_id,
+            'url': origin + '/',
+            'name': 'UFlinux',
+            'inLanguage': ['en', 'cs'],
+        })
+    if route in ('/', '/downloads/'):
+        page['mainEntity'] = {'@id': software_id}
+        graph.append({
+            '@type': 'SoftwareApplication',
+            '@id': software_id,
+            'name': 'UFlinux',
+            'url': origin + '/',
+            'sameAs': REPO,
+            'softwareVersion': catalog['tag'],
+            'downloadUrl': origin + ('/cs' if lang == 'cs' else '') + '/downloads/',
+            'softwareHelp': {'@id': 'https://docs.uflinux.org/#website'},
+        })
+    return json.dumps({'@context': 'https://schema.org', '@graph': graph},
+                      separators=(',', ':')).replace('<', r'\u003c')
+
 sitemap=[]
 def render(lang,route,title,description,body,index=True):
     cs=lang=='cs'
     def tr(en,cz): return cz if cs else en
     prefix='/cs' if cs else ''
     url=prefix+route
+    canonical=origin+url
+    json_ld=(
+        '<script type="application/ld+json">'
+        + structured_data(lang, route, canonical, title, description)
+        + '</script>'
+    ) if index else ''
     alt=route if cs else '/cs'+route
     nav=[('/',tr('Overview','Přehled')),('/downloads/',tr('Downloads','Ke stažení')),('/guide/',tr('Get started','Začínáme'))]
     docs_origin='https://docs.uflinux.org'+('/cs/' if cs else '/')
@@ -35,13 +78,13 @@ def render(lang,route,title,description,body,index=True):
 <html lang="{lang}" prefix="og: https://ogp.me/ns#"><head hx-head="merge">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)} · UFlinux</title><meta name="description" content="{esc(description)}">
-<script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebSite","name":"UFlinux","url":"{origin}/","inLanguage":["en","cs"]}}</script>
+{json_ld}
 <meta name="theme-color" content="#191919"><meta name="color-scheme" content="dark">
-<link rel="canonical" href="{origin}{url}">
+<link rel="canonical" href="{canonical}">
 <link rel="alternate" hreflang="en" href="{origin}{route}"><link rel="alternate" hreflang="cs" href="{origin}/cs{route}">
 <link rel="alternate" hreflang="x-default" href="{origin}{route}">
 <meta property="og:title" content="{esc(title)} · UFlinux"><meta property="og:description" content="{esc(description)}">
-<meta property="og:type" content="website"><meta property="og:url" content="{origin}{url}">
+<meta property="og:type" content="website"><meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="UFlinux">
 <meta property="og:locale" content="{'cs_CZ' if cs else 'en_GB'}"><meta property="og:locale:alternate" content="{'en_GB' if cs else 'cs_CZ'}">
 <meta property="og:image" content="{origin}{a('og-image.jpg')}">

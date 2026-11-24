@@ -1,4 +1,4 @@
-import json, subprocess, sys, unittest
+import json, re, subprocess, sys, unittest
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
@@ -185,4 +185,37 @@ class SiteTests(unittest.TestCase):
             cs=Document((ROOT/f'dist/cs/{route}index.html').read_text())
             self.assertEqual(en.alternates['cs'],cs.canonical)
             self.assertEqual(cs.lang,'cs')
+
+    def test_structured_data_matches_indexable_pages(self):
+        out=ROOT/'dist'
+        version=json.loads((out/'releases.json').read_text())['tag']
+        for file in out.rglob('*.html'):
+            with self.subTest(page=file.relative_to(out)):
+                text=file.read_text()
+                doc=Document(text)
+                scripts=re.findall(r'<script type="?application/ld\+json"?>(.*?)</script>',text,re.S)
+                if 'noindex' in doc.metadata.get('robots',''):
+                    self.assertEqual(scripts,[])
+                    continue
+                self.assertEqual(len(scripts),1)
+                data=json.loads(scripts[0])
+                self.assertEqual(data['@context'],'https://schema.org')
+                graph={node['@type']:node for node in data['@graph']}
+                prefix='cs/' if doc.lang=='cs' else ''
+                home=file == out/f'{prefix}index.html'
+                downloads=file == out/f'{prefix}downloads/index.html'
+                page=graph['CollectionPage' if downloads else 'WebPage']
+                self.assertEqual(page['url'],doc.canonical)
+                self.assertEqual(page['description'],doc.metadata['description'])
+                self.assertEqual(page['inLanguage'],doc.lang)
+                self.assertEqual('WebSite' in graph,home)
+                self.assertEqual('SoftwareApplication' in graph,home or downloads)
+                if home:
+                    self.assertEqual(page['isPartOf']['@id'],graph['WebSite']['@id'])
+                if home or downloads:
+                    software=graph['SoftwareApplication']
+                    self.assertEqual(page['mainEntity']['@id'],software['@id'])
+                    self.assertEqual(software['softwareVersion'],version)
+                    self.assertEqual(urlsplit(software['downloadUrl']).path,f'/{prefix}downloads/')
+
 if __name__=='__main__': unittest.main()
